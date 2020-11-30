@@ -4,7 +4,7 @@
 
 - [ ] python基础
 - [ ] python机器学习
-- [ ] python数据机构
+- [ ] python数据结构
 - [ ] python剑指offer
 - [ ] c++数据结构
 - [ ] c++Leetcode
