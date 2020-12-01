@@ -1,6 +1,6 @@
 # Leaning_notes
 
-学习笔记
+<font color=red size=1>python基础</font>学习笔记
 
 没有一蹴而就，慢慢打磨
 
