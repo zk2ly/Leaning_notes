@@ -39,15 +39,15 @@
 
 ## 1.基本数据类型
 
-![1](C:\Users\admin\Desktop\1.png)
+![](https://github.com/zk2ly/Leaning_notes/blob/main/python%E5%9F%BA%E7%A1%80/1.png)
 
 ## 2.变量与运算符
 
-![2](C:\Users\admin\Desktop\2.png)
+![](https://github.com/zk2ly/Leaning_notes/blob/main/python%E5%9F%BA%E7%A1%80/2.png)
 
 ## 3.面向对象
 
-![3](C:\Users\admin\Desktop\3.png)
+![](https://github.com/zk2ly/Leaning_notes/blob/main/python%E5%9F%BA%E7%A1%80/3.png)
 
 ```python
 # 定义
