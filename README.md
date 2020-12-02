@@ -10,4 +10,3 @@
 - [ ] python剑指offer
 - [ ] c++数据结构
 - [ ] c++Leetcode
-$y=ax+b$
