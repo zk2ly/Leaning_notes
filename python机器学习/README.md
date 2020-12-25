@@ -500,9 +500,10 @@ knn_reg.score(X_test_standard, y_test)
 
 ### 3-1.评价标准：
 
-$
+$$
 \sum_{i=1}^{m}\left(y_{\text {test}}^{(i)}-\hat{y}_{\text {test}}^{(i)}\right)^{2}
-$
+$$
+
 SE：square error 平方误差  能够表达预测值和真实值的差距有多大 但是受m的影响 即样本越多 误差越大  
 
 
