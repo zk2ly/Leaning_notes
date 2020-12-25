@@ -90,7 +90,7 @@ scikit-learn官网：https://scikit-learn.org/
     - [11-7-3.stacking](#11-7-3stacking)
   - [11-8.总结](#11-8总结)
 
-![image-20201201140737173](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201201140737173.png)
+![image-20201201140737173](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201201140737173.png)
 
 **机器学习分类一：**
 
@@ -225,7 +225,7 @@ X_train = Scalar.transform(X_train)  # 归一化后的训练集
 
 ## 2.K近邻算法
 
-![image-20201201172225829](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201201172225829.png)
+![image-20201201172225829](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201201172225829.png)
 
 ### 2-1.简介
 
@@ -375,7 +375,7 @@ score = knn_clf.score(X_test, y_test)  # 评分 默认使用accuracy 注意这�
 
 **2.weight**   如图绿色样本最近的三个点中有两个蓝色 此时knn判断绿色样本属于蓝色类别 但实际上它离红色类别更近 因此knn除了考虑最近k个样本的类别以外 还应该考虑他们的距离 越近的权重应当越大 一般权重取距离的倒数 **使用距离时要做数据的标准化**
 
-![image-20201201180240215](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201201180240215.png)
+![image-20201201180240215](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201201180240215.png)
 
 **3.明可夫斯基距离参数p**、
 
@@ -383,23 +383,23 @@ score = knn_clf.score(X_test, y_test)  # 评分 默认使用accuracy 注意这�
 
 a b 两个样本在各个维度的差的平方的和开根号
 
-![image-20201201180709328](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201201180709328.png)
+![image-20201201180709328](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201201180709328.png)
 
 除此之外还可以使用**曼哈顿距离**
 
 a b 两个样本各个维度的差的绝对值的和
 
-![image-20201201180900764](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201201180900764.png)
+![image-20201201180900764](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201201180900764.png)
 
 其实欧氏距离是两点的连线距离  曼哈顿距离是两点的折现距离
 
 绿色是欧氏距离  红紫黄都是曼哈顿距离 他们都相同
 
-![image-20201201181005307](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201201181005307.png)
+![image-20201201181005307](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201201181005307.png)
 
 上述两种距离其实都是取不同p值的明可夫斯基距离
 
-![image-20201201181229486](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201201181229486.png)
+![image-20201201181229486](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201201181229486.png)
 
 ### 2-6.对knn做超参数网格搜索
 
@@ -470,7 +470,7 @@ grid_search.best_estimator_.score(X_test_standard, y_test)  # 最好模型的准
 
 ### 2-7.knn完成回归任务
 
-![image-20201201190616918](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201201190616918.png)
+![image-20201201190616918](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201201190616918.png)
 
 把top_k的标签取出来后 标签不再是类别 所以不用统计类别数 而是把标签的数值相加求平均(或加权平均)
 
@@ -498,25 +498,25 @@ knn_reg.score(X_test_standard, y_test)
 
 ### 3-1.评价标准：
 
-![image-20201225150252775](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150252775.png)
+![image-20201225150252775](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150252775.png)
 
 SE：square error 平方误差  能够表达预测值和真实值的差距有多大 但是受m的影响 即样本越多 误差越大  
 
-![image-20201225150322623](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150322623.png)
+![image-20201225150322623](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150322623.png)
 
 MSE：mean square error 均方误差  不受m影响 但是量纲难以解释 比如任务是拟合波士顿房价，y的量纲是万元，那么做了平方后mse=10就代表了每个样本的误差是10(万元的平方)  难以理解
 
-![image-20201225150331596](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150331596.png)
+![image-20201225150331596](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150331596.png)
 
 RMSE：root mean square error 均方根误差   很好
 
-![image-20201225150337020](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150337020.png)
+![image-20201225150337020](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150337020.png)
 
 MAE：mean absolute mean  平均绝对误差  也可以用作线性回归任务的评价标准 
 
 R2：r square 最好的回归任务评价标准  sklearn的线性回归默认使用R2的评价方式
 
-![image-20201202103601916](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201202103601916.png)
+![image-20201202103601916](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201202103601916.png)
 
 R2最大可为1，此时所以预测结果均完全正确
 
@@ -526,7 +526,7 @@ R2小于0时，说明模型效果不如基准模型，数据的特征可能并�
 
 整理一下R2的公式
 
-![image-20201225150349775](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150349775.png)
+![image-20201225150349775](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150349775.png)
 
 代码实现
 
@@ -547,7 +547,7 @@ mean_squared_error(y_predict, y_test)
 
 假设样本只有一个特征 那么最佳拟合方程可以假设为 y=ax+b 这种问题称为简单线性回归
 
-![image-20201202094452512](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201202094452512.png)
+![image-20201202094452512](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201202094452512.png)
 
 表达差距的函数，其实就是损失函数，要最小化这个函数，就是最小化差距。
 
@@ -559,7 +559,7 @@ y - y_hat 不能表达差距 因为这个真实值减去预测值有正有负 m�
 
 **用最小二乘法来求损失函数的最小值**    (把y_hat=ax+b带入损失函数然后对ab求导并使其为0)
 
-![image-20201225150402782](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150402782.png)
+![image-20201225150402782](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150402782.png)
 
 
 
@@ -571,43 +571,43 @@ a的分子和分母都可以看成是两个向量的点乘 -- 各元素相乘相
 
 假设第i个样本的特征
 
-![image-20201225150428819](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150428819.png)
+![image-20201225150428819](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150428819.png)
 
 要拟合的参数
 
-![image-20201225150434390](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150434390.png)
+![image-20201225150434390](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150434390.png)
 
 拟合后的高维直线
 
-![image-20201225150439998](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150439998.png)
+![image-20201225150439998](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150439998.png)
 
 为了向量化，给x添加一维特征，这一维特征的值恒为1
 
-![image-20201225150449927](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150449927.png)
+![image-20201225150449927](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150449927.png)
 
 此时可以写成向量相乘的形式
 
-![image-20201225150455111](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150455111.png)
+![image-20201225150455111](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150455111.png)
 
 数据集中共有m个样本  特征矩阵表示为
 
-![image-20201225150500521](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150500521.png)
+![image-20201225150500521](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150500521.png)
 
 此时预测值的向量为
 
-![image-20201225150505910](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150505910.png)
+![image-20201225150505910](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150505910.png)
 
 原损失函数
 
-![image-20201225150511165](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150511165.png)
+![image-20201225150511165](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150511165.png)
 
 矩阵化
 
-![image-20201225150516527](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150516527.png)
+![image-20201225150516527](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150516527.png)
 
 最小化损失函数  得到多元线性回归的一般解的形式 称为多元线性回归的正规方程解
 
-![image-20201225150537852](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150537852.png)
+![image-20201225150537852](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150537852.png)
 
 **采用正规方程优化损失函数时，不需要对数据做归一化处理，用原始数据即可，但是时间复杂度很高O(n^3)，而且矩阵不一定可逆**
 
@@ -786,7 +786,7 @@ NOX代表一氧化碳浓度 说明一氧化碳浓度越高 房价越低
 
 每次参数减去损失对它的导数，更新得到的新参数会使损失函数比原来的变小
 
-![image-20201210134910267](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201210134910267.png)
+![image-20201210134910267](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201210134910267.png)
 
 **特点：**
 
@@ -800,45 +800,45 @@ NOX代表一氧化碳浓度 说明一氧化碳浓度越高 房价越低
 
 解决方案：可以多次运行 随机初始化 
 
-![image-20201210135101228](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201210135101228.png)
+![image-20201210135101228](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201210135101228.png)
 
 2.使用梯度下降时要做数据归一化   不做归一化 有的特征尺度大有的特征尺度小 得到的梯度乘一个正常的学习率 对于小尺度的特征 仍然会很大  难收敛  乘一个很小的学习率 对于大尺度的特征 需要很长的时间才能收敛 因此要做归一化
 
-![image-20201210143514419](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201210143514419.png)
+![image-20201210143514419](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201210143514419.png)
 
 **求解：**
 
 以线性回归为例，在线性回归中，我们选择的损失函数是平方误差SE:
 
-![image-20201225150609440](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150609440.png)
+![image-20201225150609440](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150609440.png)
 
 其中预测值y_hat用参数表示为：
 
-![image-20201225150614804](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150614804.png)
+![image-20201225150614804](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150614804.png)
 
 那么损失函数就可以写成：
 
-![image-20201225150621659](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150621659.png)
+![image-20201225150621659](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150621659.png)
 
 用梯度下降法求它的最小值，就是每次theta都要沿着梯度的方向做更新
 
 这里用损失函数对theta的每个分量求偏导
 
-![image-20201225150641677](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150641677.png)
+![image-20201225150641677](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150641677.png)
 
 这里样本数m越大，每一个偏导也就越大，这是不合理的，因此每个偏导再除以样本数m
 
-![image-20201225150647673](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150647673.png)
+![image-20201225150647673](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150647673.png)
 
 此时损失函数已经从平方误差SE变成了均方误差MSE：
 
 有时也会取分母等于2m
 
-![image-20201225150652638](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150652638.png)
+![image-20201225150652638](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150652638.png)
 
 对这个公式做向量化：
 
-![image-20201225150702759](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150702759.png)
+![image-20201225150702759](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150702759.png)
 
 ### 4-2.随机梯度下降
 
@@ -858,17 +858,17 @@ NOX代表一氧化碳浓度 说明一氧化碳浓度越高 房价越低
 
 设置一个学习率，使它可以随迭代次数增多而变小 
 
-![image-20201210144907738](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201210144907738.png)
+![image-20201210144907738](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201210144907738.png)
 
 **求解：**
 
 对于批量下降，计算各个分量的偏导时，要求和所有样本，而随机梯度下降，只求随机样本x_i的偏导
 
-![image-20201225150743844](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150743844.png)
+![image-20201225150743844](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150743844.png)
 
 此时可以去掉分母m   做向量化
 
-![image-20201225150800012](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150800012.png)
+![image-20201225150800012](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150800012.png)
 
 ### 4-3.小批量梯度下降
 
@@ -908,7 +908,7 @@ print(J(theta))  # -0.99999998814289
 
 可视化：
 
-![image-20201210161339093](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201210161339093.png)
+![image-20201210161339093](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201210161339093.png)
 
 可以看到随着梯度变小，每一次theta的增量也变小
 
@@ -1021,7 +1021,7 @@ sgd_reg.score(X_test_standard, y_test)
 
 根据损失函数 数学推导求得梯度表达式  可以用梯度的定义来验证是否正确
 
-![image-20201210171024129](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201210171024129.png)
+![image-20201210171024129](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201210171024129.png)
 
 取任一点附近两个点带入损失函数，然后除以两点距离，得到这一点得导数 (对于多维的情况  每次求一个方向的偏导)
 
@@ -1031,7 +1031,7 @@ sgd_reg.score(X_test_standard, y_test)
 
 不能直接用定义式求整体样本的参数  因为要求两次损失函数的值  太慢 数学推导式不需要求损失函数的值
 
-![image-20201225150811758](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150811758.png)
+![image-20201225150811758](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150811758.png)
 
 ```python
 import numpy as np
@@ -1092,11 +1092,11 @@ print(theta_debug)
 
 主成分分析是一个非监督学习算法，不用标记，他的作用是把高维的数据降低到低维，比如说将二维数据降到一维，就是找一个轴，使得样本映射到这个轴上之后，间距最大，即方差最大，此时说明样本的差异性保持得最好，最能代表原来的数据分布
 
-<img src="C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225091851549.png" alt="image-20201225091851549" style="zoom:80%;" />
+<img src="https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225091851549.png" alt="image-20201225091851549" style="zoom:80%;" />
 
 PCA的第一步是demean，即均值归0，此时方差更好计算
 
-![image-20201225150818612](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150818612.png)
+![image-20201225150818612](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150818612.png)
 
 求解PCA问题，有三种解法：
 
@@ -1136,7 +1136,7 @@ X_test_reduction = pca.transform(X_test)
 
 比如有特征x 添加x的多项式x^2作为新的特征 此时可以拟合一条曲线 :
 
-![image-20201225150827745](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150827745.png)
+![image-20201225150827745](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150827745.png)
 
 **特点：**
 
@@ -1148,7 +1148,7 @@ X_test_reduction = pca.transform(X_test)
 
 要拟合的数据如图所示
 
-![image-20201211134955043](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201211134955043.png)
+![image-20201211134955043](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201211134955043.png)
 
 ```python
 from sklearn.linear_model import LinearRegression
@@ -1167,7 +1167,7 @@ y_predict2 = lin_reg2.predict(X2)
 
 效果图：
 
-![image-20201211135305496](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201211135305496.png)
+![image-20201211135305496](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201211135305496.png)
 
 ### 6-2.sklearn接口
 
@@ -1190,7 +1190,7 @@ y_predict2 = lin_reg.predict(X2)
 
 比如原来数据的特征有 x1 x2 当degree=3时 新的特征矩阵就会有10种特征
 
-![image-20201211135536039](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201211135536039.png)
+![image-20201211135536039](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201211135536039.png)
 
 ### 6-3.pipeline构造多项式回归函数
 
@@ -1221,7 +1221,7 @@ y_predict = reg.predict(X)  # 调用和普通模型一致
 
 过拟合一般是因为模型太复杂  学习能力太强  数据的一点点扰动都会极大的影响模型  这使得模型对相似数据的预测可能会有很大的不同  **方差**比较大
 
-![image-20201211140742248](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201211140742248.png)
+![image-20201211140742248](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201211140742248.png)
 
 非参数学习的机器学习算法都是高方差的  因为不对数据做任何假设  预测本身是基于训练数据的 训练数据本身的异常对预测结果干扰很大  因此方差高  这其实也是一种在训练集上的过拟合
 
@@ -1320,7 +1320,7 @@ grid_search.best_estimator_  # 返回最好的模型
 
 更改损失函数：
 
-![image-20201225150837604](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150837604.png)
+![image-20201225150837604](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150837604.png)
 
 ```python
 # sklearn接口
@@ -1336,13 +1336,13 @@ def RidgeRegression(degree, alpha):
 
 alpha无限大时  theta无限小 此时模型是一根平行于x轴的线
 
-![image-20201211155042860](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201211155042860.png)
+![image-20201211155042860](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201211155042860.png)
 
 #### 6-7-2.LASSO回归
 
 更改损失函数：
 
-![image-20201225150846918](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150846918.png)
+![image-20201225150846918](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150846918.png)
 
 ```python
 # sklearn接口
@@ -1358,7 +1358,7 @@ def LassoRegression(degree, alpha):
 
 Lasso用的是绝对值表达theta的大小 没有用平方 alpha取0.01相当于取0.0001
 
-![image-20201211155357618](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201211155357618.png)
+![image-20201211155357618](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201211155357618.png)
 
 #### 6-7-3.Ridge 和 Lasso 比较  
 
@@ -1372,11 +1372,11 @@ alpha相同时  若theta小于1  Ridge平方后变成一个更小的值  此时R
 
 knn中提到过明可夫斯基距离
 
-![image-20201225150852488](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150852488.png)
+![image-20201225150852488](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150852488.png)
 
 类似的有一种Lp范式  表述的是原点到当前点的距离
 
-![image-20201225150858580](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150858580.png)
+![image-20201225150858580](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150858580.png)
 
 p=1时就是Lasso正则项 又叫L1正则项
 
@@ -1386,7 +1386,7 @@ p=2时就是Ridge正则项 又叫L2正则项
 
 弹性网其实就是L1正则和L2正则的一个加权  引入了一个[0,1]之间的系数r
 
-![image-20201225150904951](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150904951.png)
+![image-20201225150904951](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150904951.png)
 
 ## 7.逻辑回归
 
@@ -1398,7 +1398,7 @@ p=2时就是Ridge正则项 又叫L2正则项
 
 逻辑回归首先用回归算法得到一个值t，然后用sigmoid函数将这个值限制在[0,1]之间，即概率值
 
-![image-20201225150908957](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150908957.png)
+![image-20201225150908957](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150908957.png)
 
 回归值t>=0时  概率p>=0.5  认为是正类别  
 
@@ -1408,25 +1408,25 @@ p=2时就是Ridge正则项 又叫L2正则项
 
 逻辑回归本身只能用来做二分类(knn天生可以做多分类)
 
-![image-20201215143244689](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201215143244689.png)
+![image-20201215143244689](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201215143244689.png)
 
 逻辑回归采用交叉熵作为损失函数(knn没有损失函数)    
 
-![image-20201225150913687](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150913687.png)
+![image-20201225150913687](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150913687.png)
 
 y=1时 正样本 此时p越接近1损失越小
 
 y=0时 负样本 此时p越接近0损失越小
 
-![image-20201215143840334](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201215143840334.png)
+![image-20201215143840334](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201215143840334.png)
 
 假设有m个样本 此时m个样本的总损失值为:
 
-![image-20201225150918366](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150918366.png)
+![image-20201225150918366](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150918366.png)
 
 其中:
 
-![image-20201225150922894](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150922894.png)
+![image-20201225150922894](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150922894.png)
 
 sigmoid中的值可以用线性回归得到也可以用多项式回归(其实也是线性回归)得到
 
@@ -1436,11 +1436,11 @@ sigmoid中的值可以用线性回归得到也可以用多项式回归(其实也
 
 线性回归中损失的梯度向量化后得到:
 
-![image-20201225150927251](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150927251.png)
+![image-20201225150927251](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150927251.png)
 
 推导后得到逻辑回归损失的梯度向量化后为：
 
-![image-20201225150931555](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225150931555.png)
+![image-20201225150931555](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225150931555.png)
 
 ### 7-2.python实现
 
@@ -1508,7 +1508,7 @@ plt.scatter(X[y==1,0], X[y==1,1])
 plt.show()
 ```
 
-![image-20201215151833025](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201215151833025.png)
+![image-20201215151833025](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201215151833025.png)
 
 ### 7-4.sklearn接口
 
@@ -1550,13 +1550,13 @@ poly_log_reg.fit(X_train, y_train)
 
 n个类别分类n次 每次判断是当前类别的概率  得到n个概率 选择最高的作为分类概率
 
-![image-20201215153612286](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201215153612286.png)
+![image-20201215153612286](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201215153612286.png)
 
 #### 7-5-2.OVO：one vs one 
 
 n个类别分类C(n,2)次 每次判断是两个类别中的哪一个  最终选择得票数最高的分类
 
-![image-20201215153926252](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201215153926252.png)
+![image-20201215153926252](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201215153926252.png)
 
 ```python
 # 逻辑回归中封装的OVR OVO(具体见上一节sklearn接口)
@@ -1655,7 +1655,7 @@ plt.matshow(cfm, cmap=plt.cm.gray)  # 可以直接imshow显示热力图
 plt.show()
 ```
 
-![image-20201215172748027](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201215172748027.png)
+![image-20201215172748027](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201215172748027.png)
 
 图中越亮的地方代表值越大，这里对角最亮，说明预测正确的比较多
 
@@ -1673,7 +1673,7 @@ plt.matshow(err_matrix, cmap=plt.cm.gray)
 plt.show()
 ```
 
-![image-20201215172958269](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201215172958269.png)
+![image-20201215172958269](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201215172958269.png)
 
 可以看到1预测成9和8预测成1的错误情况最多
 
@@ -1687,11 +1687,11 @@ plt.show()
 
 F1 Score  两者的调和平均值  可以用来衡量两者是否平衡   也可以用来衡量分类的效果
 
-![image-20201225151008438](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151008438.png)
+![image-20201225151008438](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151008438.png)
 
 化简
 
-![image-20201225151013416](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151013416.png)
+![image-20201225151013416](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151013416.png)
 
 ```python
 def f1_score(precision, recall):
@@ -1736,7 +1736,7 @@ plt.legend()
 plt.show()
 ```
 
-<img src="C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151034813.png" alt="image-20201225151034813" style="zoom:70%;" />
+<img src="https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151034813.png" alt="image-20201225151034813" style="zoom:70%;" />
 
 可以看出在决策边界在0左右时精准率和召回率相等，得到平衡，此时的f1值也最高
 
@@ -1748,7 +1748,7 @@ plt.show()
 
 按照8-2中获得不同阈值的precision和recall，然后绘制pr曲线
 
-![image-20201216091926676](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201216091926676.png)
+![image-20201216091926676](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201216091926676.png)
 
 从PR曲线也可以看出精准度大概0.9时出现拐点，此时达到了平衡，因为再增加精准度的话，召回率断崖式下降
 
@@ -1756,7 +1756,7 @@ plt.show()
 
 如果存在交叉，可以适用面积来判断，但更常用的是平衡点或者是F1值，平衡点越靠近右上角二分类器越好，F1值越大越好
 
-![image-20201216094121349](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201216094121349.png)
+![image-20201216094121349](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201216094121349.png)
 
 ```python
 # sklearn接口
@@ -1814,7 +1814,7 @@ plt.plot(fprs, tprs)
 plt.show()
 ```
 
-![image-20201216101224309](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201216101224309.png)
+![image-20201216101224309](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201216101224309.png)
 
 左上角点(0,1)代表FPR=0,TPR=1,此时分类完全正确
 
@@ -1837,7 +1837,7 @@ print(auc)
 
 分类问题中，决策边界往往不止一个，支撑向量就是指离决策边界最近的向量，要求决策边界离支撑向量距离最远的算法叫做支撑向量机
 
-![image-20201223091431750](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201223091431750.png)
+![image-20201223091431750](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201223091431750.png)
 
 ### 9-2.最优化
 
@@ -1845,27 +1845,27 @@ d是决策边界到支撑向量的距离
 
 margin=2d  
 
-![image-20201223091724956](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201223091724956.png)
+![image-20201223091724956](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201223091724956.png)
 
 解析几何中点(x,y)到直线Ax+By+C=0的距离
 
-![image-20201225151106675](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151106675.png)
+![image-20201225151106675](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151106675.png)
 
 n维空间中，向量x到n维直线w.T x+b=0的距离
 
-![image-20201225151111581](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151111581.png)
+![image-20201225151111581](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151111581.png)
 
 对于平面中的任意一个向量都应该满足
 
-![image-20201225151116350](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151116350.png)
+![image-20201225151116350](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151116350.png)
 
 使w模长为1/d，那么化简可得，此时可看作支撑向量距离决策边界距离为1，因此这个条件中包含了对w模长的限制
 
-![image-20201225151120672](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151120672.png)
+![image-20201225151120672](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151120672.png)
 
 对于任意支撑向量|w.T x + b| =1，因此
 
-![image-20201225151125459](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151125459.png)
+![image-20201225151125459](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151125459.png)
 
 ### 9-3.软间隔
 
@@ -1873,15 +1873,15 @@ n维空间中，向量x到n维直线w.T x+b=0的距离
 
 软间隔即允许一些样本点跨越支撑向量边界甚至是决策边界
 
-![image-20201223094831535](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201223094831535.png)
+![image-20201223094831535](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201223094831535.png)
 
 于是每个向量都引入一个松弛变量，优化问题变为
 
-![image-20201225151546544](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151546544.png)
+![image-20201225151546544](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151546544.png)
 
 将松弛变量以L1正则化的形式引入
 
-![image-20201225151555878](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151555878.png)
+![image-20201225151555878](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151555878.png)
 
 ### 9-4.sklearn接口
 
@@ -1938,11 +1938,11 @@ poly_kernel_svc.fit(X, y)
 
 SVM原优化函数为
 
-![image-20201225151624011](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151624011.png)
+![image-20201225151624011](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151624011.png)
 
 用拉格朗日乘子求解得到
 
-![image-20201225151631470](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151631470.png)
+![image-20201225151631470](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151631470.png)
 
 其中x_i点乘x_j可以用到核技巧
 
@@ -1952,25 +1952,25 @@ SVM原优化函数为
 
 为了跳过产生多项式特征和用多项式特征分别点乘的繁琐步骤，我们希望得到一个函数可以直接得到最后x_i_hat点乘x_j_hat的结果，这个函数就是多项式的核函数
 
-![image-20201225151636014](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151636014.png)
+![image-20201225151636014](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151636014.png)
 
 核技巧就是如果要对一个或多个点乘向量做变换，可以用一个核函数直接得到变换后的点乘结果，根据变换的不同，核函数也不同
 
 引入核技巧后，优化问题变为
 
-![image-20201225151640766](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151640766.png)
+![image-20201225151640766](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151640766.png)
 
 对于二次方的多项式核函数来说
 
-![image-20201225151645943](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151645943.png)
+![image-20201225151645943](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151645943.png)
 
 一般性的多项式核函数为
 
-![image-20201225151651293](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151651293.png)
+![image-20201225151651293](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151651293.png)
 
 线性核函数就是
 
-![image-20201225151655052](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151655052.png)
+![image-20201225151655052](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151655052.png)
 
 SVM中用得最多的是高斯核函数，又叫径向基函数RBF
 
@@ -1978,7 +1978,7 @@ SVM中用得最多的是高斯核函数，又叫径向基函数RBF
 
 一般是m\*n维数据升维到m\*m维   开销大  但是对于m<n的情况很好用
 
-![image-20201225151700691](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151700691.png)
+![image-20201225151700691](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151700691.png)
 
 ```python
 # sklearn接口
@@ -1996,13 +1996,13 @@ svc = RBFKernelSVC(gamma)  # gamma越大 模型越复杂 越倾向于过拟合
 svc.fit(X, y)
 ```
 
-![image-20201223105522189](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201223105522189.png)
+![image-20201223105522189](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201223105522189.png)
 
 ### 9-7.解决回归问题
 
 提前指定间隔距离，虚线直线的向量越多，表示中间的实线越能表达回归直线
 
-![image-20201223112906245](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201223112906245.png)
+![image-20201223112906245](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201223112906245.png)
 
 ```python
 from sklearn.svm import LinearSVR
@@ -2035,11 +2035,11 @@ svr.fit(X_train, y_train)
 
 一棵决策树：
 
-![image-20201223153508642](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201223153508642.png)
+![image-20201223153508642](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201223153508642.png)
 
 对应的决策边界：
 
-![image-20201223153812257](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201223153812257.png)
+![image-20201223153812257](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201223153812257.png)
 
 问题：每个结点在哪个特征上划分？每个特征在哪个值划分？  
 
@@ -2049,7 +2049,7 @@ svr.fit(X_train, y_train)
 
 信息熵代表数据的离散程度，信息熵越大表示离散程度越高
 
-![image-20201225151708701](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151708701.png)
+![image-20201225151708701](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151708701.png)
 
 (1,0,0)此时数据都属于第一类，不离散，信息熵为0
 
@@ -2057,7 +2057,7 @@ svr.fit(X_train, y_train)
 
 对于二分类信息熵可以写成
 
-![image-20201225151712788](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151712788.png)
+![image-20201225151712788](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151712788.png)
 
 如果当前结点在d维度按照值v划分使得**信息熵降低最多**，就按它划分
 
@@ -2065,11 +2065,11 @@ svr.fit(X_train, y_train)
 
 评价数据离散程度的另一个指标  [0,1]之间 基尼系数越大 离散程度越高
 
-![image-20201225151716966](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151716966.png)
+![image-20201225151716966](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151716966.png)
 
 二分类问题中
 
-![image-20201225151720735](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201225151720735.png)
+![image-20201225151720735](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201225151720735.png)
 
 基尼系数的计算要比信息熵快，因此sklearn中默认使用基尼系数，但是两者效果没有优劣之分
 
@@ -2243,7 +2243,7 @@ bossting希望新产生的每个模型都能增强模型
 
 先拟合原始数据集，得到一个子模型，对于预测成功的点(浅色点)减少权重，对于预测错误的点(深色点)增加权重，然后拟合新数据又得到一个子模型，以此类推，可以得到n个子模型，然后集成这n个子模型进行投票预测
 
-![image-20201223172622797](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201223172622797.png)
+![image-20201223172622797](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201223172622797.png)
 
 ```python
 from sklearn.tree import DecisionTreeClassifier
@@ -2262,7 +2262,7 @@ ada_clf.fit(X_train, y_train)
 
 类推可以得到最终的模型m=m1+m2+...+mn
 
-![image-20201223173409644](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201223173409644.png)
+![image-20201223173409644](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201223173409644.png)
 
 ```python
 from sklearn.ensemble import GradientBoostingClassifier
@@ -2279,11 +2279,11 @@ gb_clf.fit(X_train, y_train)
 
 另一份数据训练最后集成子模型的融合模型
 
-![image-20201224094211603](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201224094211603.png)
+![image-20201224094211603](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201224094211603.png)
 
 可以更复杂的把数据分成三份
 
-![image-20201224095039912](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201224095039912.png)
+![image-20201224095039912](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201224095039912.png)
 
 因此stacking的层数和每层的模型数都是超参数
 
