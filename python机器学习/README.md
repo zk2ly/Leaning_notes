@@ -500,28 +500,30 @@ knn_reg.score(X_test_standard, y_test)
 
 ### 3-1.评价标准：
 
-$$
+$
 \sum_{i=1}^{m}\left(y_{\text {test}}^{(i)}-\hat{y}_{\text {test}}^{(i)}\right)^{2}
-$$
-
+$
 SE：square error 平方误差  能够表达预测值和真实值的差距有多大 但是受m的影响 即样本越多 误差越大  
 
 
 $$
 \frac{1}{m} \sum_{i=1}^{m}\left(y_{t e s t}^{(i)}-\hat{y}_{t e s t}^{(i)}\right)^{2}
 $$
+
 MSE：mean square error 均方误差  不受m影响 但是量纲难以解释 比如任务是拟合波士顿房价，y的量纲是万元，那么做了平方后mse=10就代表了每个样本的误差是10(万元的平方)  难以理解
 
 
 $$
 \sqrt{\frac{1}{m} \sum_{i=1}^{m}\left(y_{\text {test }}^{(i)}-\hat{y}_{\text {test }}^{(i)}\right)^{2}}
 $$
+
 RMSE：root mean square error 均方根误差   很好
 
 
 $$
 \frac{1}{m} \sum_{i=1}^{m}\left|y_{\text {test }}^{(i)}-\hat{y}_{\text {test }}^{(i)}\right|
 $$
+
 MAE：mean absolute mean  平均绝对误差  也可以用作线性回归任务的评价标准 
 
 R2：r square 最好的回归任务评价标准  sklearn的线性回归默认使用R2的评价方式
@@ -538,6 +540,7 @@ R2小于0时，说明模型效果不如基准模型，数据的特征可能并�
 $$
 R^{2}=1-\frac{\sum_{i}\left(\hat{y}^{(i)}-y^{(i)}\right)^{2}}{\sum_{i}\left(\bar{y}-y^{(i)}\right)^{2}}=1-\frac{\left(\sum_{i=1}^{m}\left(\hat{y}^{(i)}-y^{(i)}\right)^{2}\right) / m}{\left(\sum_{j=1}^{m}\left(y^{(i)}-\bar{y}\right)^{2}\right) / m}=1-\frac{M S E(\hat{y}, y)}{\operatorname{Var}(y)}
 $$
+
 代码实现
 
 ```python
