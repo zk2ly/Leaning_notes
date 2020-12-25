@@ -849,7 +849,7 @@ $$
 用梯度下降法求它的最小值，就是每次theta都要沿着梯度的方向做更新
 
 这里用损失函数对theta的每个分量求偏导
-$$
+![](http://latex.codecogs.com/svg.latex?$$
 \nabla J(\theta)=\left(\begin{array}{c}
 \partial J / \partial \theta_{0} \\
 \partial J / \partial \theta_{1} \\
@@ -870,7 +870,7 @@ $$
 \cdots \\
 \sum_{i=1}^{m}\left(X_{b}^{(i)} \theta-y^{(i)}\right) \cdot X_{n}^{(i)}
 \end{array}\right)
-$$
+$$)
 这里样本数m越大，每一个偏导也就越大，这是不合理的，因此每个偏导再除以样本数m
 $$
 \nabla J(\theta)=\left(\begin{array}{c}
