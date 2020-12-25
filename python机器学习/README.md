@@ -224,7 +224,7 @@ X_train = Scalar.transform(X_train)  # 归一化后的训练集
 
 ## 2.K近邻算法
 
-![image-20201201172225829](C:\Users\admin\AppData\Roaming\Typora\typora-user-images\image-20201201172225829.png)
+![image-20201201172225829](https://github.com/zk2ly/Leaning_notes/blob/main/python%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/README_IMG/image-20201201172225829.png)
 
 ### 2-1.简介
 
