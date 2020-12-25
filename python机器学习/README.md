@@ -1,3 +1,7 @@
+请安装插件后阅读公式：
+
+https://chrome.google.com/webstore/detail/mathjax-plugin-for-github/ioemnmodlmafdkllaclgeombjnmnbima
+
 scikit-learn官网：
 
 https://scikit-learn.org/
