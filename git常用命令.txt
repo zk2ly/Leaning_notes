@@ -4,7 +4,6 @@ git init
 git add file  
 添加文件到暂存区
 
-git commit 
 git commit -m "xxx"
 暂存区代码提交到git
 
