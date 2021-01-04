@@ -96,8 +96,9 @@ git clone www.xxx.com # 克隆一个已经有的仓库
 
 git add file  # 添加文件到暂存区
 
-git commit -m "xxx" # 暂存区代码提交到git
+git commit -m "xxx" # 暂存区代码提交到仓库
 
 git push origin main # 推送到远程仓库
+
 ```
 
