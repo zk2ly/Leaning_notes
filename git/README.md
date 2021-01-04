@@ -92,7 +92,8 @@ ssh -T git@github.com # 配置私钥和公钥
 ## 3.git操作
 ```
 git init # 初始化一个空仓库
-git clone www.xxx.com # 克隆一个已经有的仓库
+git clone https:\\ # URL克隆一个已经有的仓库 推送时要输入账号密码
+git clone git@github.com: # SSH克隆一个仓库 不需要输入账号密码
 
 git add file  # 添加文件到暂存区
 
@@ -100,5 +101,6 @@ git commit -m "xxx" # 暂存区代码提交到仓库
 
 git push origin main # 推送到远程仓库
 
+git remote -v # 查看当前https协议连接的仓库
 ```
 
