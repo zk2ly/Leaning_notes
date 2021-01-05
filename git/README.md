@@ -16,7 +16,7 @@ apt install git # 安装git
 git --version # 查看版本
 ```
 ## 2.配置git
-配置全局的github账号信息
+设置提交代码时的用户信息
 ```
 git config --global user.name "username"
 git config --global user.email "email"
@@ -44,8 +44,11 @@ git remote -v # 查看当前https协议连接的仓库
 git clone git@github.com: # SSH协议克隆一个已有的仓库 不需要输入账号密码
 ```
 
+<img src="001.png" width="250">
+
 ```
-git add file  # 添加文件到暂存区
+git add [file1] [file2] ...  # 添加文件到暂存区
+git add [dir] # 添加指定目录到暂存区，包括子目录
 git add . # 添加工作区所有文件到暂存区
 
 git commit -m "xxx" # 暂存区代码提交到仓库
@@ -56,7 +59,7 @@ git status # 显示有变更的文件
 ```
 
 ## 4.其他
-需要用到时，查阅并补充
+需要用时，查阅并补充
 
 https://gitee.com/all-about-git
 
