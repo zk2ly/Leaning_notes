@@ -92,12 +92,12 @@ docker镜像基于联合文件系统，对文件的每一次修改都作为一�
 
 比如ubuntu的镜像，每加一个新的包，就叠加了一个新的层，构成一个新的镜像；比如文件5更新版本到文件7之后，又叠加一个新的层，得到一个新的镜像。
 
-<img src="README_IMG/001.png" width=300>
-<img src="README_IMG/002.png" width=300>
+<img src="README_IMG/001.png" width=400>
+<img src="README_IMG/002.png" width=400>
 
 镜像下载时，这个镜像下的所有层都会下载，而且是一层一层的下载。
 
-<img src="README_IMG/003.png" width=500>
+<img src="README_IMG/003.png" width=700>
 
 
 
