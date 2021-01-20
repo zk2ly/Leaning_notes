@@ -369,6 +369,783 @@ void QuickSort(T arr[], int n){
 
 # 2.树结构
 ## 2.1 堆
-数组实现一个堆
-堆排序  
-始终比快排和归并慢  用的多的是动态数据的维护
+### 2.1.1 实现一个堆
+实现一个堆的类，输入是堆的容量，可以查询此时堆的大小和是否为空
+```c++
+#include <iostream>
+
+using namespace std;
+
+/*
+完全二叉树：若设二叉树的深度为k，除第 k 层外，其它各层的结点数都达到最大个数，第k 层所有的结点都连续集中在最左边
+堆：是一个完全二叉树，从1开始索引的话，i结点的左孩子是2i,右孩子是2i+1，父节点是i/2,因此可以不用树形结构，而用数组表示
+
+*/
+template<typename T>
+class MaxHeap{
+
+private:
+    T *data;
+    int count;
+
+public:
+
+    // 构造函数，传入堆的容量，构建一个数组
+    MaxHeap(int capacity){
+        data = new T[capacity+1];  // 从 1 开始索引 0没有元素
+        count = 0;
+    }
+
+    ~MaxHeap(){
+        delete[] data;
+    }
+
+    int size(){
+        return count;
+    }
+
+    bool isEmpty(){
+        return count==0;
+    }
+};
+
+// 测试
+int main(){
+
+    // 前面是创建类 后面是调用构建函数
+    MaxHeap<int> mh = MaxHeap<int>(100);
+    cout<< mh.size() <<endl;
+
+    return 0;
+
+}
+```
+新增功能，可以向堆中插入一个新元素和删除一个元素(堆顶出列)
+```c++
+#include <iostream>
+#include <cassert>
+
+using namespace std;
+
+template<typename T>
+class MaxHeap{
+
+private:
+    T *data;
+    int count;
+    int capacity;
+
+
+    // k不是根节点并且大于父节点的时候移动 
+    void shiftUp(int k){
+        while(k>1 && data[k]>data[k/2]){
+            swap(data[k], data[k/2]);
+            k /= 2;
+        }
+    }
+
+    // 有子节点且子节点大于自身时移动，并且是和更大的那个子节点互换
+    void shiftDown(int k){
+        while(2*k<=count){
+            int j = 2*k;  // j是要交换的结点，此时是左节点
+            if(j+1 <= count && data[j+1] > data[j])  // 右结点存在且大于左节点，则j变为右结点
+                j++;
+            if(data[k] > data[j]) break;
+            swap(data[k], data[j]);
+            k = j;
+        }
+
+    }
+
+public:
+
+    
+    MaxHeap(int capacity){
+        data = new T[capacity+1];  
+        count = 0;
+        this->capacity = capacity;  // 给类中的capacity赋值
+    }
+
+    ~MaxHeap(){
+        delete[] data;
+    }
+
+    int size(){
+        return count;
+    }
+
+    bool isEmpty(){
+        return count==0;
+    }
+
+    // 插入一个元素t，首先放到堆的最后位置，然后和父节点比较，如果大于父节点则交换位置，直到小于父节点
+    void insert(T t){
+        assert(count + 1 <= capacity);  
+        data[count+1] = t;
+        count++;
+        shiftUp(count);  // 把加入的元素移动到合适位置 
+    }
+
+    // 取出堆顶元素，首先堆顶元素和堆尾元素互换，然后提出堆尾元素，此时的堆顶元素再和他的两个子节点比较，和最大的子节点交换，直至大于所有子节点
+    T extractMax(){
+        T res = data[1];  
+        swap(data[1], data[count]);
+        count--;
+        shiftDown2(1);
+
+        return res;
+    }
+
+    void show(){
+        for(int i =1; i<=count; i++)
+            cout<<data[i]<<' ';
+    }
+};
+
+// 测试
+int main(){
+
+    MaxHeap<int> mh = MaxHeap<int>(100);
+
+    srand(time(NULL));
+    for(int i =0; i<7; i++)
+        mh.insert( rand() % 100);
+
+    mh.show();
+    int res = mh.extractMax();
+    cout<<'\n'<<res<<endl;
+    mh.show();
+
+    return 0;
+}
+```
+### 2.1.2 堆排序 
+堆排序就是把序列insert到堆中，然后一个一个extractMax出来
+
+创建堆和取出元素都是O(nlogn)  但始终比快排和归并慢  用的多的是动态数据的维护
+```c++
+// 堆排序，输入数组和数组的大小，对数组进行排序
+template<typename T>
+void heapSort(T arr[], int n){
+    MaxHeap<T> maxheap = MaxHeap<T>(n);
+
+    for(int i=0; i<n; i++)
+        maxheap.insert(arr[i]);
+    for(int i=n-1; i>=0; i--)
+        arr[i] = maxheap.extractMax();
+}
+```
+可以优化创建堆的过程到O(n)
+
+heapify创建堆:直接把数组复制到堆数组中，不采用insert的形式，此时堆数组的所有叶子结点，都已经是一个堆了，从第一个非叶子结点count/2开始做shifrDown，最后得到一个正确的堆
+
+```c++
+// 新增一个构造函数
+MaxHeap(T arr[], int n){
+    data = new T[n+1];  
+
+    for(int i=0; i<n; i++)
+        data[i+1] = arr[i];
+    
+    count = n;
+    for(int i=count/2; i>0; i--)
+        shiftDown(i);
+}
+
+// 基于heapify构造函数创建堆 然后依次输出堆顶元素做排序
+template<typename T>
+void heapSort2(T arr[], int n){
+    MaxHeap<T> maxheap = MaxHeap<T>(arr, n);
+
+    for(int i=n-1; i>=0; i--)
+        arr[i] = maxheap.extractMax();
+}
+```
+还可以优化取出元素extractMax中shiftDown的过程
+```c++
+// 用赋值替换交换
+void shiftDown2(int k){
+    T e = data[k];
+
+    while(2*k<=count){
+        int j = 2*k;  
+        if(j+1 <= count && data[j+1] > data[j])  
+            j++;
+
+        if(e > data[j]) break;  // 子节点小于当前要重排序的结点值 终止
+        data[k] = data[j];  //子节点覆盖了父节点，此时两个结点的值都是子节点的值，但是我们用k保存了此时要替换的子节点的序号，用e保存了它的值
+        k = j;  // k保存新的要排序结点的序号
+    }
+    data[k] = e; // 最后不用替换了，所以把替换结点的值e赋值给替换结点当前的序号k
+}
+```
+最后，不仅可以在时间上优化堆排序，还可以在空间上优化堆排序
+
+堆的数据结构本身是一个数组，因此可以在数组上进行原地排序
+
+```c++
+// 对容量为n的数组arr的第k个元素做shiftdown
+// 此时从0开始索引，左子节点为2*k+1
+// k是要排序的结点  j是要互换的子节点
+template<typename T>
+void shiftDown(T arr[], int n, int k){
+    T e = arr[k];
+    while(2*k+1<n){
+        int j = 2*k+1;
+        if(j+1<n && arr[j+1]>arr[j]) j++;
+        if(e > arr[j]) break;
+
+        arr[k] = arr[j];
+        k = j;  // k保存要排序结点的序号  e保存它的值
+    }
+    arr[k] = e;
+}
+
+// 注意，此时我们的堆是从0开始索引的
+// 从第一个非叶子结点(最后一个元素的索引-1)/2开始heapify建堆  最后一个元素的索引 = n-1
+// 第一个元素是堆中最大的，交换到数组末尾，然后对交换到前面的元素做shiftDown
+template<typename T>
+void heapSort3(T arr[], int n){
+
+    // 建堆
+    for(int i =(n-1-1)/2; i>=0; i--)
+        shiftDown(arr, n, i);
+
+    for(int i=n-1; i>=0; i--){
+        swap(arr[0], arr[i]);
+        shiftDown(arr, i, 0);  // !!!特别注意 这里arr的容量是i，因为i之后的元素是已经排好序的，不参与shiftdown,不然这些大的元素又会被替换到前面
+    }
+}
+```
+
+### 2.1.3 索引堆
+堆在insert和extractMax时，不管是shiftUp还是shiftDown都要移动元素,元素可能是一个比较大的类，移动很耗时
+
+一个数组建立成堆之后，就不能索引原来的元素了，因此希望有一种数据结构，既可以有数组的性质，又有堆的性质
+
+索引堆用索引建堆  数据位置保持不变  从外看还是原来的数组  但是也可以按照索引来当作堆进行操作
+```c++
+template<typename T>
+class IndexMaxHeap{
+
+private:
+    T *data;  // data对应外部数组
+    T *indexes;  // indexes对应内部的堆 操作堆时只操作索引 因为根据索引可以找到原来应该操作的数据是哪一个 indexes[i]=j堆的i号结点是数组的j号结点
+
+    int count;
+    int capacity;
+
+
+    // 操作堆的k号结点时要比较他和父节点的值，通过indexes[k]可以知道要操作的真实数据应该是数组中的第indexes[k]个元素
+    void shiftUp(int k){
+        while(k>1 && data[indexes[k]]>data[indexes[k/2]]){
+            swap(data[indexes[k]], data[indexes[k/2]]);
+            k /= 2;
+        }
+    }
+
+    
+    void shiftDown(int k){
+        while(2*k<=count){
+            int j = 2*k; 
+            if(j+1 <= count && data[indexes[j+1]] > data[indexes[j]])  
+                j++;
+            if(data[indexes[k]] > data[indexes[j]]) break;
+            swap(data[indexes[k]], data[indexes[j]]);
+            k = j;
+        }
+
+    }
+
+public:
+
+    MaxHeap(int capacity){
+        data = new T[capacity+1];  
+        indexes = new T[capacity+1]
+        count = 0;
+        this->capacity = capacity;  
+    }
+
+    ~MaxHeap(){
+        delete[] data;
+        delete[] indexes;
+    }
+
+    int size(){
+        return count;
+    }
+
+    bool isEmpty(){
+        return count==0;
+    }
+
+    //  对外是一个数组的插入操作 即在位置i插入元素t
+    // i位置原来不能有值
+    void insert(int i, T t){
+        i = i+1;  // 外部数组从0开始索引 内部从1开始索引
+        assert(count + 1 <= capacity);  
+        assert(i>=1 && i<=capacity);
+
+        data[i] = t;
+        indexes[count+1] = i;
+        count++;
+
+        shiftUp(count); 
+    }
+
+    T extractMax(){
+        assert(count>0);
+
+        T res = data[indexes[1]];  // indexes[1]代表堆中的1号结点在数组中的索引号 然后在data[]中取出它的值
+        swap(data[indexes[1]], data[indexes[count]]);
+        count--;
+        shiftDown(1);  // 把堆中的1号索引的结点往下移
+
+        return res;
+    }
+};
+```
+此时的索引堆可以有一些新的方法
+```c++
+// 像普通数组一样O(1)索引元素
+T getItem( int i ){
+    assert( i + 1 >= 1 && i + 1 <= capacity );
+    return data[i+1];
+}
+
+// O(1)获得数组中最大的元素
+T getMax(){
+    assert( count > 0 );
+    return data[indexes[1]];
+}
+
+// O(1)获得原数组中最大元素的索引号
+int getMaxIndex(){
+    assert( count > 0 );
+    return indexes[1]-1;
+}
+
+// 将i号元素改为t
+void change( int i , T t){
+
+    i += 1;
+    data[i] = t;  // i是在数组中的索引号 直接改变
+
+    // 要修改堆，首先要找到它在堆中的索引号，即indexes[j]=i
+    // 之后shiftUp(j), 再shiftDown(j)
+    for( int j = 1 ; j <= count ; j ++ )
+        if( indexes[j] == i ){
+            shiftUp(j);
+            shiftDown(j);
+            return;
+        }
+}
+```
+这里change是O(nlogn)的，可以优化一下，使用反向查找表
+
+indexes[i]  表示堆中的i号元素在数组中的位置
+
+reverse[i]  表示数组中的i号元素在堆中的位置
+
+change时已知数组中的元素i,reverse[i]即可知道在堆中的位置，此时再对此位置结点进行操作即可
+```c++
+
+```// 最大索引堆
+template<typename Item>
+class IndexMaxHeap{
+
+private:
+    Item *data;     // 最大索引堆中的数据
+    int *indexes;   // 最大索引堆中的索引, indexes[x] = i 表示索引i在x的位置
+    int *reverse;   // 最大索引堆中的反向索引, reverse[i] = x 表示索引i在x的位置
+
+    int count;
+    int capacity;
+
+    // 索引堆中, 数据之间的比较根据data的大小进行比较, 但实际操作的是索引
+    void shiftUp( int k ){
+
+        while( k > 1 && data[indexes[k/2]] < data[indexes[k]] ){
+            swap( indexes[k/2] , indexes[k] );
+            reverse[indexes[k/2]] = k/2;
+            reverse[indexes[k]] = k;
+            k /= 2;
+        }
+    }
+
+    // 索引堆中, 数据之间的比较根据data的大小进行比较, 但实际操作的是索引
+    void shiftDown( int k ){
+
+        while( 2*k <= count ){
+            int j = 2*k;
+            if( j + 1 <= count && data[indexes[j+1]] > data[indexes[j]] )
+                j += 1;
+
+            if( data[indexes[k]] >= data[indexes[j]] )
+                break;
+
+            swap( indexes[k] , indexes[j] );
+            reverse[indexes[k]] = k;
+            reverse[indexes[j]] = j;
+            k = j;
+        }
+    }
+
+public:
+    // 构造函数, 构造一个空的索引堆, 可容纳capacity个元素
+    IndexMaxHeap(int capacity){
+
+        data = new Item[capacity+1];
+        indexes = new int[capacity+1];
+        reverse = new int[capacity+1];
+        for( int i = 0 ; i <= capacity ; i ++ )
+            reverse[i] = 0;
+
+        count = 0;
+        this->capacity = capacity;
+    }
+
+    ~IndexMaxHeap(){
+        delete[] data;
+        delete[] indexes;
+        delete[] reverse;
+    }
+
+    // 返回索引堆中的元素个数
+    int size(){
+        return count;
+    }
+
+    // 返回一个布尔值, 表示索引堆中是否为空
+    bool isEmpty(){
+        return count == 0;
+    }
+
+    // 向最大索引堆中插入一个新的元素, 新元素的索引为i, 元素为item
+    // 传入的i对用户而言,是从0索引的
+    void insert(int i, Item item){
+        assert( count + 1 <= capacity );
+        assert( i + 1 >= 1 && i + 1 <= capacity );
+
+        // 再插入一个新元素前,还需要保证索引i所在的位置是没有元素的。
+        assert( !contain(i) );
+
+        i += 1;
+        data[i] = item;
+        indexes[count+1] = i;
+        reverse[i] = count+1;
+        count++;
+
+        shiftUp(count);
+    }
+
+    // 从最大索引堆中取出堆顶元素, 即索引堆中所存储的最大数据
+    Item extractMax(){
+        assert( count > 0 );
+
+        Item ret = data[indexes[1]];
+        swap( indexes[1] , indexes[count] );
+        reverse[indexes[count]] = 0;
+        count--;
+
+        if(count){
+            reverse[indexes[1]] = 1;
+            shiftDown(1);
+        }
+
+        return ret;
+    }
+
+    // 从最大索引堆中取出堆顶元素的索引
+    int extractMaxIndex(){
+        assert( count > 0 );
+
+        int ret = indexes[1] - 1;
+        swap( indexes[1] , indexes[count] );
+        reverse[indexes[count]] = 0;
+        count--;
+
+        if(count) {
+            reverse[indexes[1]] = 1;
+            shiftDown(1);
+        }
+
+        return ret;
+    }
+
+    // 获取最大索引堆中的堆顶元素
+    Item getMax(){
+        assert( count > 0 );
+        return data[indexes[1]];
+    }
+
+    // 获取最大索引堆中的堆顶元素的索引
+    int getMaxIndex(){
+        assert( count > 0 );
+        return indexes[1]-1;
+    }
+
+    // 看索引i所在的位置是否存在元素
+    bool contain( int i ){
+        assert( i + 1 >= 1 && i + 1 <= capacity );
+        return reverse[i+1] != 0;
+    }
+
+    // 获取最大索引堆中索引为i的元素
+    Item getItem( int i ){
+        assert( contain(i) );
+        return data[i+1];
+    }
+
+    // 将最大索引堆中索引为i的元素修改为newItem
+    void change( int i , Item newItem ){
+
+        assert( contain(i) );
+        i += 1;
+        data[i] = newItem;
+
+        // 有了 reverse 之后,
+        // 我们可以非常简单的通过reverse直接定位索引i在indexes中的位置
+        shiftUp( reverse[i] );
+        shiftDown( reverse[i] );
+    }
+};
+```
+
+## 2.2 二分搜索树
+二分搜索树左孩子都比父节点小，右孩子都比父节点大
+### 2.2.1 二分查找
+```c++
+// 在长为n的数组arr中查找target 返回索引 没有返回-1
+template<typename T>
+int binarySearch(T arr, int n, T target){
+
+    int l=0, r=n-1, mid;
+
+    while(l<=r){
+        mid = (r-l)/2 + l; // 防止两个Int型相加越界
+
+        if(arr[mid] == target) 
+            return mid;
+
+        if(arr[mid] > target)
+            r = mid-1;
+        else
+            l = mid+1;
+    }
+
+    return -1;
+}
+
+// 递归实现
+template<typename T>
+int binarySearch2(T arr[], int l, int r, T target ){
+
+    // 递归边界
+    if(l>r)
+        return -1;
+
+    int mid = (r-l)/2 + l;
+    if(arr[mid] == target) 
+        return mid;
+    if(arr[mid]>target)
+        binarySearch2(arr, 0, mid-1, target);
+    else
+        binarySearch2(arr, mid+1, r, target);
+
+}
+```
+### 2.2.2 实现
+```c++
+template<typename Key, typename Value>
+class BST{
+
+private:
+    struct Node{
+        Key key;
+        Value value;
+        Node *left;
+        Node *right;
+
+        Node(Key key, Value value){
+            this->key = key;
+            this->value = value;
+            this->left = this->right = NULL;
+        }
+    };
+
+    // 私有变量 一个根节点和一个节点数
+    Node *root;
+    int count;
+
+public:
+    BST(){
+        root = NULL;
+        count = 0;
+    }
+
+    ~BST(){
+        // 需要后续遍历来析构
+    }
+
+    int size(){
+        return count;
+    }
+
+    bool isEmpty(){
+        return count==0;
+    }
+};
+```
+加入插入 查找 和 遍历
+```c++
+template<typename Key, typename Value>
+class BST{
+
+private:
+    struct Node{
+        Key key;
+        Value value;
+        Node *left;
+        Node *right;
+
+        Node(Key key, Value value){
+            this->key = key;
+            this->value = value;
+            this->left = this->right = NULL;
+        }
+    };
+
+    // 私有变量 一个根节点和一个节点数
+    Node *root;
+    int count;
+
+public:
+    BST(){
+        root = NULL;
+        count = 0;
+    }
+
+
+    ~BST(){
+        destroy(root);
+    }
+
+    int size(){
+        return count;
+    }
+
+    bool isEmpty(){
+        return count==0;
+    }
+
+    // 在搜索二叉树中插入结点(key, value)
+    void insert(Key key, Value value){
+        root = insert(root, key, value);
+    }
+
+    // 查找二分搜索树中是否有键为key的结点
+    bool contain(Key key){
+        return contain(root, key);
+    }
+
+    // 查找key对应的值value，在之前要用contain函数确认在树中,不存在返回NULL
+    Value* search(Key key){
+        return search(root, key);
+    }
+
+    // 前序遍历
+    void preOrder(){
+        preOrder(root);
+    }
+
+    // 中序遍历
+    void inOrder(){
+        inOrder(root);
+    }
+
+    // 后序遍历
+    void postOrder(){
+        postOrder(root);
+    }
+
+private:
+    //在以*node为根的搜索二叉树中插入结点(key,value)
+    Node* insert(Node *node, Key key, Value value){
+        if(node = NULL){
+            count++;
+            return new Node(key, value);
+        }
+
+        if(node->key == key)
+            node->value = value;
+        else if(node->key > key)
+            insert(node->left, key, value);
+        else
+            insert(node->right, key, value);
+
+        return node;    
+    }
+
+    bool contain(Node *node, Key key){
+        if(node = NULL)
+            return false;
+        
+        if(node->key == key)
+            return true;
+        else if(k < node->key)
+            contain(node->left, key);
+        else
+            contain(node->right, key);
+    }
+
+    Value* search(Node* node, Key key){
+        if(node == NULL)
+            return NULL;
+
+        if(node->key == key)
+            return &(node->value);  // 返回的是指针类型
+        else if(k < node->key)
+            search(node->left, key);
+        else
+            search(node->right, key);
+    }
+
+    void preOrder(Node *node){
+        if(node != NULL){
+            cout<<node->key>>endl;
+            preOrder(node->left);
+            preOrder(node->right);
+        }
+    }
+
+    void inOrder(Node *node){
+        if(node != NULL){
+            inOrder(node->left);
+            cout<<node->key>>endl;
+            inOrder(node->right);
+        }
+    }
+
+    void postOrder(Node *node){
+        if(node != NULL){
+            postOrder(node->left);
+            postOrder(node->right);
+            cout<<node->key>>endl;
+        }
+    }
+
+    void destroy(Node *node){
+        if(node != NUll){
+            destroy(node->left);
+            destroy(node->right);
+
+            delete node;
+            count--;
+        }
+    }
+};
+```
+
+## 2.3 并查集
+

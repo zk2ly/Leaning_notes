@@ -1,53 +1,156 @@
 #include <iostream>
+#include <cassert>
 
 using namespace std;
 
-template<typename T>
-void __QuickSort(T arr[], int l, int r){ 
+template<typename Key, typename Value>
+class BST{
 
-    if(l>=r)
-        return;
+private:
+    struct Node{
+        Key key;
+        Value value;
+        Node *left;
+        Node *right;
 
-    swap(arr[l], arr[rand()%(r-l+1)+l]);  
-
-    T v = arr[l];
-    
-    // arr[l+1,lt] < v  arr[lt+1, i)=v  arr[gt,r]>0  i是当前判断的位置
-    int lt=l, i=l+1, gt=r+1;
-    while(i<gt){
-        if(arr[i]<v){
-            swap(arr[i], arr[lt+1]);
-            lt++;
-            i++;
+        Node(Key key, Value value){
+            this->key = key;
+            this->value = value;
+            this->left = this->right = NULL;
         }
-        else if(arr[i]>v){
-            swap(arr[i], arr[gt-1]);
-            gt--;
+    };
+
+    // 私有变量 一个根节点和一个节点数
+    Node *root;
+    int count;
+
+public:
+    BST(){
+        root = NULL;
+        count = 0;
+    }
+
+
+    ~BST(){
+        destroy(root);
+    }
+
+    int size(){
+        return count;
+    }
+
+    bool isEmpty(){
+        return count==0;
+    }
+
+    // 在搜索二叉树中插入结点(key, value)
+    void insert(Key key, Value value){
+        root = insert(root, key, value);
+    }
+
+    // 查找二分搜索树中是否有键为key的结点
+    bool contain(Key key){
+        return contain(root, key);
+    }
+
+    // 查找key对应的值value，在之前要用contain函数确认在树中,不存在返回NULL
+    Value* search(Key key){
+        return search(root, key);
+    }
+
+    // 前序遍历
+    void preOrder(){
+        preOrder(root);
+    }
+
+    // 中序遍历
+    void inOrder(){
+        inOrder(root);
+    }
+
+    // 后序遍历
+    void postOrder(){
+        postOrder(root);
+    }
+
+private:
+    //在以*node为根的搜索二叉树中插入结点(key,value)
+    Node* insert(Node *node, Key key, Value value){
+        if(node = NULL){
+            count++;
+            return new Node(key, value);
         }
-        else{
-            i++;
+
+        if(node->key == key)
+            node->value = value;
+        else if(node->key > key)
+            insert(node->left, key, value);
+        else
+            insert(node->right, key, value);
+
+        return node;    
+    }
+
+    bool contain(Node *node, Key key){
+        if(node = NULL)
+            return false;
+        
+        if(node->key == key)
+            return true;
+        else if(k < node->key)
+            contain(node->left, key);
+        else
+            contain(node->right, key);
+    }
+
+    Value* search(Node* node, Key key){
+        if(node == NULL)
+            return NULL;
+
+        if(node->key == key)
+            return &(node->value);  // 返回的是指针类型
+        else if(k < node->key)
+            search(node->left, key);
+        else
+            search(node->right, key);
+    }
+
+    void preOrder(Node *node){
+        if(node != NULL){
+            cout<<node->key>>endl;
+            preOrder(node->left);
+            preOrder(node->right);
         }
     }
-    swap(arr[l], arr[lt]);
-    __QuickSort(arr, l, lt);
-    __QuickSort(arr, gt, r);
-}
 
-template<typename T>
-void QuickSort(T arr[], int n){
-    srand(time(NULL)); 
-    __QuickSort(arr, 0, n-1);
-}
+    void inOrder(Node *node){
+        if(node != NULL){
+            inOrder(node->left);
+            cout<<node->key>>endl;
+            inOrder(node->right);
+        }
+    }
 
-int main() {
+    void postOrder(Node *node){
+        if(node != NULL){
+            postOrder(node->left);
+            postOrder(node->right);
+            cout<<node->key>>endl;
+        }
+    }
 
-    int a[10] = {10,9,8,7,6,5,4,3,2,1};
-    QuickSort(a,10);
-    for( int i = 0 ; i < 10 ; i ++ )
-        cout<<a[i]<<" ";
-    cout<<endl;
+    void destroy(Node *node){
+        if(node != NUll){
+            destroy(node->left);
+            destroy(node->right);
+
+            delete node;
+            count--;
+        }
+    }
+};
+
+int main(){
 
     return 0;
 }
-
-
