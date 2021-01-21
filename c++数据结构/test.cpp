@@ -1,152 +1,59 @@
 #include <iostream>
 #include <cassert>
 
-using namespace std;
-
-template<typename Key, typename Value>
-class BST{
+class unionFind{
 
 private:
-    struct Node{
-        Key key;
-        Value value;
-        Node *left;
-        Node *right;
-
-        Node(Key key, Value value){
-            this->key = key;
-            this->value = value;
-            this->left = this->right = NULL;
-        }
-    };
-
-    // 私有变量 一个根节点和一个节点数
-    Node *root;
+    int* parent;
+    int* rank;  // 记录每一棵树的高度
     int count;
 
 public:
-    BST(){
-        root = NULL;
-        count = 0;
+    unionFind(int n){
+        parent = new int[10];
+        rank = new int[10];
+        count = n;
+
+        // 初始化时每个元素自己一个组 互不连通 树高都为1
+        for(int i=0; i<n; i++)
+            parent[i] = i;
+            rank[i] = 1;
     }
 
-
-    ~BST(){
-        destroy(root);
+    ~unionFind(){
+        delete[] parent;
+        delete[] rank;
     }
 
-    int size(){
-        return count;
+    // 不做修改
+    int find(int p){
+        while(parent[p] != p)
+            p = parent[p];
+
+        return p;
     }
 
-    bool isEmpty(){
-        return count==0;
+    // 不做修改
+    bool isConnected(int p, int q){
+        return find(p) == find(q);
     }
 
-    // 在搜索二叉树中插入结点(key, value)
-    void insert(Key key, Value value){
-        root = insert(root, key, value);
-    }
+    // 合并时矮树指向高树，等高时随意指向，但被指向的那棵树rank+1
+    void unionE(int p, int q){
+        int pid = find(p);
+        int qid = find(q);
 
-    // 查找二分搜索树中是否有键为key的结点
-    bool contain(Key key){
-        return contain(root, key);
-    }
+        if(pid == qid)
+            return;
 
-    // 查找key对应的值value，在之前要用contain函数确认在树中,不存在返回NULL
-    Value* search(Key key){
-        return search(root, key);
-    }
-
-    // 前序遍历
-    void preOrder(){
-        preOrder(root);
-    }
-
-    // 中序遍历
-    void inOrder(){
-        inOrder(root);
-    }
-
-    // 后序遍历
-    void postOrder(){
-        postOrder(root);
-    }
-
-private:
-    //在以*node为根的搜索二叉树中插入结点(key,value)
-    Node* insert(Node *node, Key key, Value value){
-        if(node = NULL){
-            count++;
-            return new Node(key, value);
-        }
-
-        if(node->key == key)
-            node->value = value;
-        else if(node->key > key)
-            insert(node->left, key, value);
-        else
-            insert(node->right, key, value);
-
-        return node;    
-    }
-
-    bool contain(Node *node, Key key){
-        if(node = NULL)
-            return false;
-        
-        if(node->key == key)
-            return true;
-        else if(k < node->key)
-            contain(node->left, key);
-        else
-            contain(node->right, key);
-    }
-
-    Value* search(Node* node, Key key){
-        if(node == NULL)
-            return NULL;
-
-        if(node->key == key)
-            return &(node->value);  // 返回的是指针类型
-        else if(k < node->key)
-            search(node->left, key);
-        else
-            search(node->right, key);
-    }
-
-    void preOrder(Node *node){
-        if(node != NULL){
-            cout<<node->key>>endl;
-            preOrder(node->left);
-            preOrder(node->right);
-        }
-    }
-
-    void inOrder(Node *node){
-        if(node != NULL){
-            inOrder(node->left);
-            cout<<node->key>>endl;
-            inOrder(node->right);
-        }
-    }
-
-    void postOrder(Node *node){
-        if(node != NULL){
-            postOrder(node->left);
-            postOrder(node->right);
-            cout<<node->key>>endl;
-        }
-    }
-
-    void destroy(Node *node){
-        if(node != NUll){
-            destroy(node->left);
-            destroy(node->right);
-
-            delete node;
-            count--;
-        }
+        if(rank[pid] < rank[qid])
+            parent[pid] = qid;
+        else if(rank[qid] < rank[pid])
+            parent[qid] = pid;
+        else{
+            parent[qid] = pid;
+            rank[pid] ++;
+        }  
     }
 };
 

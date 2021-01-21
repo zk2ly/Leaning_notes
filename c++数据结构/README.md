@@ -1,6 +1,6 @@
 
 
-# 1.线性结构
+# 1.线型数据结构
 ## 1.1 O(n^2)的排序算法
 ### 1.1.1 选择排序
 >算法步骤：
@@ -367,7 +367,7 @@ void QuickSort(T arr[], int n){
 }
 ```
 
-# 2.树结构
+# 2.树型数据结构
 ## 2.1 堆
 ### 2.1.1 实现一个堆
 实现一个堆的类，输入是堆的容量，可以查询此时堆的大小和是否为空
@@ -997,8 +997,10 @@ public:
     }
 };
 ```
-加入插入 查找 和 遍历
+依次添加功能： 插入元素 查找元素 深度优先遍历  广度优先遍历  删除元素
 ```c++
+#include <queue>
+
 template<typename Key, typename Value>
 class BST{
 
@@ -1067,6 +1069,40 @@ public:
     // 后序遍历
     void postOrder(){
         postOrder(root);
+    }
+
+    // 层序遍历
+    void levelOrder(){
+        levelOrder(root);
+    }
+
+    // 找到最小的结点
+    Key minnode(){
+        assert(count != 0);
+        Node *node = minnode(root);
+        return node->key;
+    }
+
+    // 找到最大的结点
+    Key maxnode(){
+        assert(count != 0);
+        Node *node = maxnode(root);
+        return node->key;
+    }
+
+    // 删除最小的结点
+    void removeMin(){
+        removeMin(root);
+    }
+
+    // 删除最大的结点
+    void removeMax(){
+        removeMax(root);
+    }
+
+    // 删除键值为key的结点
+    void remove(Key key){
+        remove(root, key);
     }
 
 private:
@@ -1144,8 +1180,317 @@ private:
             count--;
         }
     }
+
+    // 层序遍历 先把根结点入队，然后每弹出一个结点，就把这个结点的左右结点依次入队
+    void levelOrder(Node *node){
+        if(node == NULL)
+            return;
+
+        queue<Node *> q;
+        q.push(node);
+
+        while(!q.empty()){
+            Node * n = q.front();
+            q.pop();
+            cout<<n->key<<endl;
+
+            if(n->left != NULL)
+                q.push(n->left);
+            if(n->right != NULL)
+                q.push(n->right);
+        }
+    }
+
+    // 左子树为空 则找到最小的结点 否则一直向左寻找
+    Node* minnode(Node *node){
+        if(node->left == NULL)  
+            return node;
+
+        return minnode(node->left);
+    }
+
+    Node* maxnode(Node* node){
+        if(node->right == NULL)
+            return node;
+
+        return maxnode(node->right);
+    }
+
+    Node* removeMin(Node* node){
+        // 如果找到最小结点，返回它的右子树
+        if(node->left == NULL){
+            Node *r = node->right;
+            delete node;
+            count --;
+            return r;
+        }
+
+        // 删除了最小节点的左子树重新挂载到左指针上
+        node->left = removeMin(node->left);
+
+        return node;
+    }
+
+    Node* removeMax(Node* node){
+        if(node->right == NULL){
+            Node* l = node->left;
+            delete node;
+            count--;
+            return l;
+        }
+
+        node->right = removeMax(node->right);
+        
+        return node;
+    }
+
+    Node* remove(Node* node, Key key){
+        if(node == NULL)
+            return node;
+        
+        if(key < node->key){
+            node->left = remove(node->left, key);
+            return node;
+        }
+        else if(key > node->key){
+            node->right = remove(node->right, key);
+            return node;
+        }
+        // 找到要删除的结点了
+        else{
+            // 1. 没有左子树
+            if(node->left == NULL){
+                Node* r = node->right;
+                delete node;
+                count--;
+                return r;
+            }
+            // 2. 没有右子树
+            else if(node->right == NULL){
+                Node* l = node->left;
+                delete node;
+                count--;
+                return l;
+            }
+            // 3. 左右子树都有,找到前驱或者后继代替
+            // 这里找后继，即大于该结点的最小的结点，即右子树中最小的结点
+            else{
+                Node* post = new Node(minnode(node->right));  // 创建一个和后继一样的新节点
+                count ++;
+
+                post->right = removeMin(node->right);  // 结点右指针指向删除了后继的右子树 删除时会count-- 所以前面++
+                post->left = node->left;
+
+                delete node;
+                count--;
+
+                return post;
+            }
+        }
+    }
+};
+```
+搜索二叉树的缺陷：对于有序如递增序列，向树插入新节点会一直在结点的右孩子插入，最后导致树退化成一个链表
+
+可以使用平衡二叉树，平衡二叉树是左右高度不超过1的搜索二叉树，其中一种实现形式就是红黑树
+## 2.3 并查集
+并查集可以非常高效的回答结点是否连接在一起的问题,而不求出具体的路径
+
+并 union(p,q)  把p q并到一个组中
+
+查 find(p)  查找p在哪个组  isConnected(p,q)  判断p q是否连接
+
+### 2.3.1 线性数据结构
+定义一个并查集数组，数组中保存的就是当前元素属于哪个组，这里不单独使用包含数据的数组，就把数组的索引当作要分组的数据
+
+这种方式叫quick find  即查找很快  并很慢
+```c++
+class unionFind{
+
+private:
+    int* id;
+    int count;
+
+public:
+    unionFind(int n){
+        id = new int[10];
+        count = n;
+
+        // 初始化时每个元素自己一个组 互不连通
+        for(int i=0; i<n; i++)
+            id[i] = i;
+    }
+
+    ~unionFind(){
+        delete[] id;
+    }
+
+    // 查找元素p所在的索引  O(1)
+    int find(int p){
+        return id[p];
+    }
+
+    // 判断p q是否在一个组
+    bool isConnected(int p, int q){
+        return find(p) == find(q);
+    }
+
+    // 连接p q O(n)
+    void unionE(int p, int q){
+        int pid = find(p);
+        int qid = find(q);
+
+        if(pid == qid)
+            return;
+
+        // 连通pq 要把所在的两个组合并 因此要遍历所有元素 找到属于其中一个组的 组号都改成另一个组的
+        for(int i=0; i<count; i++)
+            if(id[i] == pid)
+                id[i] = qid;
+        
+    }
 };
 ```
 
-## 2.3 并查集
+### 2.3.2 树型数据结构
+为了减少合并时的时间复杂的，用数组构建一棵指向父节点的树，两个元素的根节点相同，即属于同一组。
+```c++
+class unionFind{
 
+private:
+    int* parent;
+    int count;
+
+public:
+    unionFind(int n){
+        parent = new int[10];
+        count = n;
+
+        // 初始化时每个元素自己一个组 互不连通
+        for(int i=0; i<n; i++)
+            parent[i] = i;
+    }
+
+    ~unionFind(){
+        delete[] parent;
+    }
+
+    // 查找元素p所在的索引  O(h) h是这个组的树高
+    // parent[p] == p 时代表是根结点 即当且的组号
+    int find(int p){
+        while(parent[p] != p)
+            p = parent[p];
+
+        return p;
+    }
+
+    // 判断p q是否在一个组
+    bool isConnected(int p, int q){
+        return find(p) == find(q);
+    }
+
+    // 连接p q O(h) h是两个组中高的那个树的树高
+    void unionE(int p, int q){
+        int pid = find(p);
+        int qid = find(q);
+
+        if(pid == qid)
+            return;
+
+        // 一个根指向另一个根 合并成一组
+        parent[pid] = qid;
+        
+    }
+};
+```
+这种方法有一个不好的地方，就是时间复杂度和每一组的树高h相关，但是合并两个树的时候是随机的合并的，如果是矮树指向高树则高度不变，相反则高度加一，这使得树可能越来越高，最坏情况时间复杂度退化成O(n)，因此在合并两个树时，要判断树高，将矮树的父亲指针指向高树
+```c++
+class unionFind{
+
+private:
+    int* parent;
+    int* rank;  // 记录每一棵树的高度
+    int count;
+
+public:
+    unionFind(int n){
+        parent = new int[10];
+        rank = new int[10];
+        count = n;
+
+        // 初始化时每个元素自己一个组 互不连通 树高都为1
+        for(int i=0; i<n; i++)
+            parent[i] = i;
+            rank[i] = 1;
+    }
+
+    ~unionFind(){
+        delete[] parent;
+        delete[] rank;
+    }
+
+    // 不做修改
+    int find(int p){
+        while(parent[p] != p)
+            p = parent[p];
+
+        return p;
+    }
+
+    // 不做修改
+    bool isConnected(int p, int q){
+        return find(p) == find(q);
+    }
+
+    // 合并时矮树指向高树，等高时随意指向，但被指向的那棵树rank+1
+    void unionE(int p, int q){
+        int pid = find(p);
+        int qid = find(q);
+
+        if(pid == qid)
+            return;
+
+        if(rank[pid] < rank[qid])
+            parent[pid] = qid;
+        else if(rank[qid] < rank[pid])
+            parent[qid] = pid;
+        else{
+            parent[qid] = pid;
+            rank[pid] ++;
+        }  
+    }
+};
+```
+### 2.3.3 路径压缩
+版本一：查找时，如果当前元素自身不是根节点，那么让它指向它父亲的父亲
+
+情况一： 它的父亲不是根节点，那么指向的是另一个更靠近根的结点
+
+情况二：它的父亲是根节点，根节点的父亲还是自己，因此直接指向了根节点
+
+这种方式在查找时，不再遍历整棵树，而是跳跃遍历，因此查找更快，而且查找过程中可能减少树高，降低整体的查找和合并的时间复杂度
+```c++
+int find(int p){
+    while(parent[p] != p){
+        parent[p] = parent[parent[p]];
+        p = paren[p];
+    }
+
+    return p;
+}
+```
+版本二： 查找时，如果当前元素自身不是根节点，那么让他直接指向根节点，最后所有树高都为2，因为所有元素都是直接指向根节点的
+```c++
+int find(int p){
+    while(parent[p] != p)
+        parent[p] = find(parent[p]);  // 不能find(p) 死循环了
+
+    return parent[p];  // 最后要返回的是p所在的根节点
+}
+```
+理论上版本二更快 ，实际应用中版本一更快
+
+路径压缩后的树型并查集所有操作的时间复杂度都是近乎于1的
+
+# 3.图型数据结构
+## 
