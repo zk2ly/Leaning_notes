@@ -1,61 +1,65 @@
 #include <iostream>
 #include <cassert>
+#include <vector>
 
-class unionFind{
+using namespace std;
+
+class sparseGraph{
 
 private:
-    int* parent;
-    int* rank;  // 记录每一棵树的高度
-    int count;
+    int v, e;  // 记录结点和边的数量
+    bool directed;  // 是否是有向图
+    vector<vector<bool>> g;  // 邻接矩阵
 
 public:
-    unionFind(int n){
-        parent = new int[10];
-        rank = new int[10];
-        count = n;
+    sparseGraph(int n, bool directed){
+        assert(n>0);
 
-        // 初始化时每个元素自己一个组 互不连通 树高都为1
-        for(int i=0; i<n; i++)
-            parent[i] = i;
-            rank[i] = 1;
+        this->v=n;
+        this->e=0;
+        this->directed = directed;
+        this->g = vector<vector<bool>>(n, vector<bool>());  // g初始化为n个空的vector, 表示每一个g[i]都为空, 即没有任和边
     }
 
-    ~unionFind(){
-        delete[] parent;
-        delete[] rank;
+    ~sparseGraph(){}
+
+    // 图中的节点数
+    int numV(){
+        return v;
     }
 
-    // 不做修改
-    int find(int p){
-        while(parent[p] != p)
-            p = parent[p];
-
-        return p;
+    // 图中的边数
+    int numE(){
+        return e;
     }
 
-    // 不做修改
-    bool isConnected(int p, int q){
-        return find(p) == find(q);
+    // 判断是否有p到q的连接
+    bool hasE(int p, int q){
+        assert(p>0 && p<=v && q>0 && q<=v);  // 确定没有越界
+
+        for(int i=0; i<g[p].size(); i++)
+            if(g[p][i] == q)
+                return true;
+        return false;
     }
 
-    // 合并时矮树指向高树，等高时随意指向，但被指向的那棵树rank+1
-    void unionE(int p, int q){
-        int pid = find(p);
-        int qid = find(q);
+    // 添加p到q的边
+    void addE(int p, int q){
+        assert(p>0 && p<=v && q>0 && q<=v);
 
-        if(pid == qid)
+        if(hasE(p,q))
             return;
 
-        if(rank[pid] < rank[qid])
-            parent[pid] = qid;
-        else if(rank[qid] < rank[pid])
-            parent[qid] = pid;
-        else{
-            parent[qid] = pid;
-            rank[pid] ++;
-        }  
+        g[p].push_back(q);  // 添加边
+
+        if(!directed)
+            g[q].push_back(p);
+
+        e++;
     }
 };
+
+
 
 int main(){
 

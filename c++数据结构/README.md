@@ -1493,4 +1493,122 @@ int find(int p){
 路径压缩后的树型并查集所有操作的时间复杂度都是近乎于1的
 
 # 3.图型数据结构
-## 
+图可以分为有向图和无向图，还可以分为有权图和无权图。
+
+无向完全图任一结点都连接了所有的结点，即E=V*(V-1)/2
+
+## 3.1 图基础
+### 3.1.1 邻接矩阵和邻接表
+图有两种数据结构可以表示，一般稠密图用邻接矩阵，稀疏图用邻接表
+```c++
+// 邻接矩阵
+class denseGraph{
+
+private:
+    int v, e;  // 记录结点和边的数量
+    bool directed;  // 是否是有向图
+    vector<vector<bool>> g;  // 邻接矩阵
+
+public:
+    denseGraph(int n, bool directed){
+        assert(n>0);
+
+        this->v=n;
+        this->e=0;
+        this->directed = directed;
+        this->g = vector<vector<bool>>(n, vector<bool>(n, false));
+    }
+
+    ~denseGraph(){}
+
+    // 图中的节点数
+    int numV(){
+        return v;
+    }
+
+    // 图中的边数
+    int numE(){
+        return e;
+    }
+
+    // 判断是否有p到q的连接
+    bool hasE(int p, int q){
+        assert(p>0 && p<=v && q>0 && q<=v);  // 确定没有越界
+
+        return g[p][q];
+    }
+
+    // 添加p到q的边
+    void addE(int p, int q){
+        assert(p>0 && p<=v && q>0 && q<=v);
+
+        if(hasE(p,q))
+            return;
+
+        g[p][q] = true;
+
+        if(!directed)
+            g[q][p] = true;
+
+        e++;
+    }
+};
+```
+```c++
+// 邻接表
+class sparseGraph{
+
+private:
+    int v, e;  // 记录结点和边的数量
+    bool directed;  // 是否是有向图
+    vector<vector<bool>> g;  // 邻接矩阵
+
+public:
+    sparseGraph(int n, bool directed){
+        assert(n>0);
+
+        this->v=n;
+        this->e=0;
+        this->directed = directed;
+        this->g = vector<vector<bool>>(n, vector<bool>());  // g初始化为n个空的vector, 表示每一个g[i]都为空, 即没有任和边
+    }
+
+    ~sparseGraph(){}
+
+    // 图中的节点数
+    int numV(){
+        return v;
+    }
+
+    // 图中的边数
+    int numE(){
+        return e;
+    }
+
+    // 判断是否有p到q的连接
+    bool hasE(int p, int q){
+        assert(p>0 && p<=v && q>0 && q<=v);  // 确定没有越界
+
+        for(int i=0; i<g[p].size(); i++)
+            if(g[p][i] == q)
+                return true;
+        return false;
+    }
+
+    // 添加p到q的边
+    void addE(int p, int q){
+        assert(p>0 && p<=v && q>0 && q<=v);
+
+        if(hasE(p,q))
+            return;
+
+        g[p].push_back(q);  // 添加边
+
+        if(!directed)
+            g[q].push_back(p);
+
+        e++;
+    }
+};
+```
+
