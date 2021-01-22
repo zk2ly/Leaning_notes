@@ -1561,7 +1561,7 @@ class sparseGraph{
 private:
     int v, e;  // 记录结点和边的数量
     bool directed;  // 是否是有向图
-    vector<vector<bool>> g;  // 邻接矩阵
+    vector<vector<int>> g;  // 邻接表 存储节点号 int型
 
 public:
     sparseGraph(int n, bool directed){
@@ -1570,7 +1570,7 @@ public:
         this->v=n;
         this->e=0;
         this->directed = directed;
-        this->g = vector<vector<bool>>(n, vector<bool>());  // g初始化为n个空的vector, 表示每一个g[i]都为空, 即没有任和边
+        this->g = vector<vector<int>>(n, vector<int>());  // g初始化为n个空的vector, 表示每一个g[i]都为空, 即没有任和边
     }
 
     ~sparseGraph(){}
@@ -1611,4 +1611,266 @@ public:
     }
 };
 ```
+### 3.1.2 遍历邻边
+遍历图G中点p的邻边，直接遍历邻接矩阵或者邻接表中点p这一行的元素即可
+```c++
+// 邻接矩阵
+vector<bool> adjE(int p){
+    vector<bool> adje = g[p];
+    return adje;
+}
+
+// 邻接表
+vector<int> adjE(int p){
+    vector<int> adje = g[p];
+    return adje;
+}
+```
+### 3.1.3 图的深度优先遍历
+深度优先遍历就是从一个点开始，访问它的所有邻接结点，对于没有访问过的进行递归的深度优先遍历。
+
+深度优先遍历的时间复杂度 
+
+邻接矩阵:O(v^2)  因为要遍历每一个点  每一个点又要遍历其他点确认是否相邻
+
+邻接表:O(v+e)  遍历每一个点 每个点只要遍历他的邻接结点 即边数
+```c++
+// 深度优先遍历求连通块
+template<typename Graph>
+class component{
+
+private:
+    Graph &G;  // 要遍历的图的引用
+    bool *visited;  // 标记结点是否访问过
+    int count;  // 记录连通块
+
+    // 从点p开始深度优先遍历所在连通块
+    void dfs(int p){
+        visited[p] = true;  // 当前结点标记已经遍历到了
+        vector<bool> adj = G.adjE(p);  // vector必须指定类型 邻接矩阵返回的是bool型 邻接表是int型
+        for(int i=0;i<adj.size();i++){  // 遍历它的邻接矩阵或者邻接表
+            if(adj[i] && !visited[i])  // 邻接表存储的都是邻接结点 邻接矩阵标记为真值的才是邻接结点 保证是邻接结点并且没有被访问
+                dfs(i);  // 遍历这个结点
+        }
+    }
+
+public:
+    component(Graph &g):G(g){  // 因为G是一个引用 要进行初始化 不能赋值，因此这里先用&g来引用一个图 然后用g初始化G
+        visited = new bool[G.numV()];  // 开辟一段bool空间 大小是图的节点数 用于保存visited
+        for(int i=0; i<G.numV(); i++)  // 全部未访问过
+            visited[i] = false;
+        count = 0;
+    }
+
+    ~component(){
+        delete[] visited;
+    }
+
+    int getCount(){
+        for(int i=0; i<G.numV(); i++)  // 遍历所有结点
+            if(!visited[i]){  // 如果这个结点没有遍历过
+                dfs(i);  // 深度优先遍历它  函数完成时已经遍历了i所在连通块的所有结点
+                count++;  // 连通块数目加一 表示已经遍历完了一个连通块
+            }
+        return count;
+    }
+};
+```
+判断两个结点是否相连接，多维护一个记录结点所在连通块序号的数组就可以了 id[p]==id[q]代表相连
+```c++
+// 深度优先遍历求路径 不是最短路径
+template<typename Graph>
+class path{
+
+private:
+    Graph &G;  
+    bool *visited;  
+    int *from; // 记录从哪个结点遍历过来的
+    int s;  // 原点  
+
+
+    void dfs(int p){
+        visited[p] = true;  
+
+        vector<int> adj = G.adjE(p);  // 这里返回一个邻接表的元素 用Int型
+        for(int i=0;i<adj.size();i++){  
+            if(!visited[i]){
+                from[i] = p;  // 遍历i结点之间 标记i结点是由p结点遍历过去的
+                dfs(i); 
+            }      
+        }
+    }
+
+
+
+public:
+    // 构造函数输入图 和 要求路径的原点
+    path(Graph &g, int s):G(g){  
+        assert(s>=0 && s<G.numV());
+
+        visited = new bool[G.numV()];  
+        from = new int[G.numV()];  
+
+        for(int i=0; i<G.numV(); i++){
+            visited[i] = false;
+            from[i] = -1;  // 初始都没有遍历过 因此没有上一个结点
+        }
+        this->s = s;
+
+        dfs(s);  // 初始化时直接得到与s相关的所有路径
+    }
+
+    ~path(){
+        delete[] visited;
+        delete[] from;
+    }
+
+    // 判断w是否与s相连
+    // 遍历过就一定相连
+    bool hasPath(int w){
+        assert(w>=0 && w<G.numV());
+
+        return visited[w];
+    }
+
+    // 得到s到w的路径
+    void getPath(int w, vector<int> &vec){
+        
+        stack<int> stk;
+
+        // 从w开始 把from数组放进栈中 
+        while(w){
+            stk.push(w);
+            w = from[w];
+        }
+
+        vec.clear();
+
+        // 依次出栈 因为进去的是from路径 因此出来的是to路径 即要求的路径
+        while(!stk.empty()){
+            vec.push_back(stk.top());
+            stk.pop();
+        }
+    }
+
+    // 打印路径
+    void showPath(int w){
+        vector<int> vec;
+        getPath(w, vec);
+
+        for(int i=0; i<vec.size(); i++)
+            cout<<vec[i]<<' ';
+    }
+};
+```
+
+### 3.1.4 图的广度优先遍历
+从一个点开始进行广度优先遍历，先把这个点入队，然后开始对队进行操作。即当队不为空时，就弹出队首元素，并把它没有入队的邻接结点全部入队。
+
+广度优先遍历时间复杂度和深度优先遍历一致
+
+广度优先遍历可以求最短路径，因为他是从原点开始一层层的遍历，求原点到某一点的路径时，也是一层层的寻找，每层只经过一个结点，即最短
+```c++
+template<typename Graph>
+class shortestPath{
+
+private:
+    Graph &G;  
+    bool *visited;  
+    int *from; // 记录从哪个结点遍历过来的
+    int *dis;  // 记录到原点的距离
+    int s;  // 原点
+
+    // 从点p开始广度优先遍历
+    void bfs(int p){
+        queue<int> q;
+
+        q.push(p);  
+        visited[p] = true;  // 入队即访问过了
+        
+
+        while(!q.empty()){
+            int v = q.front();  // 取队首元素
+            q.pop();
+
+            vector<int> adj = G.adjE(v);  // 遍历队首元素的所有邻接结点 没访问过的入队
+            for(int i=0; i<adj.size(); i++){
+                if(!visited[i]){
+                    q.push(i);  
+                    visited[i] = true;  // 入队即访问过了
+                    from[i] = v;
+                    dis[i] = dis[v] + 1;  // 到原地的距离是此时队首元素加1
+                }
+            }
+        }
+
+    }
+
+public:
+    shortestPath(Graph &g, int s):G(g){  
+        assert(s>=0 && s<G.numV());
+
+        visited = new bool[G.numV()];  
+        from = new int[G.numV()];  
+        dis = new int[G.numV()]; 
+
+        for(int i=0; i<G.numV(); i++){
+            visited[i] = false;
+            from[i] = -1;  
+            dis[i] = -1;  // 初始到原点距离都无限大 设为-1
+        }
+
+        dis[s] = 0;  // 原点到自己的距离是0
+
+        this->s = s;
+
+        bfs(s);  
+    }
+
+    ~shortestPath(){
+        delete[] visited;
+        delete[] from;
+        delete[] dis;
+    }
+
+    // 判断w是否与s相连
+    bool hasPath(int w){
+        assert(w>=0 && w<G.numV());
+
+        return visited[w];
+    }
+
+    // 得到s到w的路径
+    void getPath(int w, vector<int> &vec){
+        
+        stack<int> stk;
+
+        while(w){
+            stk.push(w);
+            w = from[w];
+        }
+
+        vec.clear();
+
+        while(!stk.empty()){
+            vec.push_back(stk.top());
+            stk.pop();
+        }
+    }
+
+    // 打印路径
+    void showPath(int w){
+        vector<int> vec;
+        getPath(w, vec);
+
+        for(int i=0; i<vec.size(); i++)
+            cout<<vec[i]<<' ';
+    }
+};
+```
+
+## 3.2 最小生成树 
+
+
+## 3.3 最短路径
 
