@@ -749,167 +749,129 @@ reverse[i]  表示数组中的i号元素在堆中的位置
 
 change时已知数组中的元素i,reverse[i]即可知道在堆中的位置，此时再对此位置结点进行操作即可
 ```c++
+// 最小索引堆
+#ifndef MY_INDEXMINHEAP
+#define MY_INDEXMINHEAP
 
-```// 最大索引堆
-template<typename Item>
-class IndexMaxHeap{
+#include <iostream>
+#include <cassert>
 
+using std::swap;
+
+template<typename T>
+class IndexMinHeap{
 private:
-    Item *data;     // 最大索引堆中的数据
-    int *indexes;   // 最大索引堆中的索引, indexes[x] = i 表示索引i在x的位置
-    int *reverse;   // 最大索引堆中的反向索引, reverse[i] = x 表示索引i在x的位置
+    T *data;
+    int *index;  // index[x]=i表示 堆中x位置是索引i的元素
+    int *reverse;  // reverse[i]=x表示 索引i的元素在堆中的x位置
 
-    int count;
-    int capacity;
+    int count;  // 当前堆中元素个数
+    int capacity;  // 堆的容量
 
-    // 索引堆中, 数据之间的比较根据data的大小进行比较, 但实际操作的是索引
-    void shiftUp( int k ){
-
-        while( k > 1 && data[indexes[k/2]] < data[indexes[k]] ){
-            swap( indexes[k/2] , indexes[k] );
-            reverse[indexes[k/2]] = k/2;
-            reverse[indexes[k]] = k;
+    // 最小堆 如果存在父节点且比父节点小 节点上移
+    void shiftUp(int k){
+        while(k>1 && data[index[k]] < data[index[k/2]]){
+            swap(index[k], index[k/2]);  // 堆中位置对应的元素索引互换一下
+            reverse[index[k/2]] = k/2;  // 元素索引在堆中的位置更新一下 也可以互换
+            reverse[index[k]] = k;
             k /= 2;
         }
     }
 
-    // 索引堆中, 数据之间的比较根据data的大小进行比较, 但实际操作的是索引
-    void shiftDown( int k ){
-
-        while( 2*k <= count ){
+    // 如果存在子节点 选择子节点中最小的互换
+    void shiftDown(int k){
+        while(k*2 <= count){
             int j = 2*k;
-            if( j + 1 <= count && data[indexes[j+1]] > data[indexes[j]] )
-                j += 1;
-
-            if( data[indexes[k]] >= data[indexes[j]] )
-                break;
-
-            swap( indexes[k] , indexes[j] );
-            reverse[indexes[k]] = k;
-            reverse[indexes[j]] = j;
-            k = j;
+            if(j+1 <= count && data[index[j+1]] < data[index[j]]) j=j+1;
+            if(data[index[k]] < data[index[j]]) break;
+            swap(index[j], index[k]);
+            reverse[index[j]] = j;
+            reverse[index[k]] = k;
+            k=j;
         }
     }
 
 public:
-    // 构造函数, 构造一个空的索引堆, 可容纳capacity个元素
-    IndexMaxHeap(int capacity){
-
-        data = new Item[capacity+1];
-        indexes = new int[capacity+1];
+    IndexMinHeap(int capacity){
+        data = new T[capacity+1];
+        index = new int[capacity+1];
         reverse = new int[capacity+1];
-        for( int i = 0 ; i <= capacity ; i ++ )
-            reverse[i] = 0;
 
         count = 0;
         this->capacity = capacity;
+
+        // 初始堆中没有元素 也没有元素在堆中
+        for(int i=0; i<=capacity;i++){
+            reverse[i]=0;
+            index[i]=0;
+        }   
     }
 
-    ~IndexMaxHeap(){
+    ~IndexMinHeap(){
         delete[] data;
-        delete[] indexes;
+        delete[] index;
         delete[] reverse;
     }
 
-    // 返回索引堆中的元素个数
-    int size(){
-        return count;
-    }
+    int size(){return count;}  // 返回索引堆中的元素个数
+    bool isEmpty(){return count == 0;}  // 返回一个布尔值, 表示索引堆中是否为空
 
-    // 返回一个布尔值, 表示索引堆中是否为空
-    bool isEmpty(){
-        return count == 0;
-    }
-
-    // 向最大索引堆中插入一个新的元素, 新元素的索引为i, 元素为item
-    // 传入的i对用户而言,是从0索引的
-    void insert(int i, Item item){
-        assert( count + 1 <= capacity );
-        assert( i + 1 >= 1 && i + 1 <= capacity );
-
-        // 再插入一个新元素前,还需要保证索引i所在的位置是没有元素的。
-        assert( !contain(i) );
-
-        i += 1;
-        data[i] = item;
-        indexes[count+1] = i;
-        reverse[i] = count+1;
+    // 插入一个索引为i的元素t
+    void insert(int i, T t){
+        assert(count<capacity);  // 容量够
+        assert(i>0 && i<capacity);  // 判断索引是否有效 用户从0开始索引
+        
+        i+=1;  // 堆从1开始索引 所以外部传进来的索引要加1
+        data[i] = t;  // t元素插入索引i的位置
+        index[count+1]=i;  // 堆中count+1的位置是索引为i的元素 即把t插入了堆尾
+        reverse[i] = count+1;  
         count++;
 
-        shiftUp(count);
+        shiftUp(count);  // 新插入的堆尾元素做调整
     }
 
-    // 从最大索引堆中取出堆顶元素, 即索引堆中所存储的最大数据
-    Item extractMax(){
-        assert( count > 0 );
+    // 取出堆顶元素  在这里虽然没有删除data中的元素 但是认为元素已经没有了
+    T extractMin(){
+        T e = data[1];
+        swap(index[1], index[count]);  // 交换堆顶堆尾
+        reverse[index[1]] =1;  // 元素index[1]在堆中1
+        reverse[index[count]] =0;  // 元素index[count]不再在堆中了 
+        count--;  // 删除堆尾元素
+        shiftDown(1);  // 堆顶元素下移调整
 
-        Item ret = data[indexes[1]];
-        swap( indexes[1] , indexes[count] );
-        reverse[indexes[count]] = 0;
+        return e;
+    }
+
+    // 取出堆顶元素的索引 元素从堆的角度看不存在了 但是返回索引后可以根据索引来操作
+    int etractMinIndex(){
+        int idx = index[1]-1;
+        swap(index[1], index[count]);
+        reverse[index[1]] =1;
+        reverse[index[count]] =0;
         count--;
+        shiftDown(1);
 
-        if(count){
-            reverse[indexes[1]] = 1;
-            shiftDown(1);
-        }
-
-        return ret;
+        return idx;
     }
 
-    // 从最大索引堆中取出堆顶元素的索引
-    int extractMaxIndex(){
-        assert( count > 0 );
+    T getMin(){return data[index[1]];}  // 获取序列中最小的元素
+    T getMinIndex(){return index[1]-1;}  // 获取序列中最小元素的索引
+    bool contain(int i){return reverse[i+1] != 0;}  // 看索引i所在的位置是否存在元素
+    T getItem(int i){return data[i+1];}  //  获取序列中索引为i的元素
 
-        int ret = indexes[1] - 1;
-        swap( indexes[1] , indexes[count] );
-        reverse[indexes[count]] = 0;
-        count--;
-
-        if(count) {
-            reverse[indexes[1]] = 1;
-            shiftDown(1);
-        }
-
-        return ret;
-    }
-
-    // 获取最大索引堆中的堆顶元素
-    Item getMax(){
-        assert( count > 0 );
-        return data[indexes[1]];
-    }
-
-    // 获取最大索引堆中的堆顶元素的索引
-    int getMaxIndex(){
-        assert( count > 0 );
-        return indexes[1]-1;
-    }
-
-    // 看索引i所在的位置是否存在元素
-    bool contain( int i ){
-        assert( i + 1 >= 1 && i + 1 <= capacity );
-        return reverse[i+1] != 0;
-    }
-
-    // 获取最大索引堆中索引为i的元素
-    Item getItem( int i ){
-        assert( contain(i) );
-        return data[i+1];
-    }
-
-    // 将最大索引堆中索引为i的元素修改为newItem
-    void change( int i , Item newItem ){
-
-        assert( contain(i) );
-        i += 1;
-        data[i] = newItem;
-
-        // 有了 reverse 之后,
-        // 我们可以非常简单的通过reverse直接定位索引i在indexes中的位置
-        shiftUp( reverse[i] );
-        shiftDown( reverse[i] );
+    // 序列的位置i处插入一个元素t
+    void change(int i, T t){
+        i+=1;
+        data[i]=t;
+        
+        // 先尝试向上调整 或者调整成功 或者没有变化 相对应的两种结果再向下调整时 
+        // 或者没有变化 或者调整成功
+        shiftUp(reverse[i]); // reverse[i]表示索引为i的元素在堆中的位置 
+        shiftDown(reverse[i]);  
     }
 };
+
+#endif
 ```
 
 ## 2.2 二分搜索树
@@ -1874,6 +1836,91 @@ public:
 
 prim算法 O(ElogV)  最小索引堆
 
+prim算法首先把原点加入生成树中，然后把生成树能达到各个节点的最短边加入最小堆中(没有变达到就不加入),然后从最小堆中取出权值最小的边，连接的节点加入生成树中，然后更新生成树能达到各个节点的最短边并维护堆，循环直至所有边都加入了生成树中。
+```c++
+#ifndef MY_PRIM
+#define MY_PRIM
+
+#include <iostream>
+#include <cassert>
+#include <vector>
+#include "Edge.h"
+#include "IndexMinHeap.h"
+
+using namespace std;
+
+template<typename Graph, typename Weight>
+class prim{
+
+private:
+    Graph &G;                     // 图的引用
+    IndexMinHeap<Weight> ipq;     // 最小索引堆  保存生成树到各个节点的最短边的权值
+    vector<Edge<Weight>*> edgeTo; // 保存生成树到这个节点的最短边
+    bool *marked;                 // 表示是否已经访问过了 即是否已经加入生成树
+    vector<Edge<Weight>> mst;     // 最小生成树所包含的所有边
+    Weight mstWeight;             // 最小生成树的总权值
+
+    void visit(int v){
+        marked[v] = true;  // 加入生成树中
+        vector<Edge<Weight>> adj = G.adjE();  // 所有邻接边
+        for(int i=0; i<adj.size(); i++){
+            int w = adj[i].other(v);  // w是边另一头的节点
+            if(!marked[w]){  // 如果节点没有在生成树中
+                if(!edgeTo[w]){  // 如果还没有保存到这个节点的最短边
+                    edgeTo[w] = &adj[i];  // 当前边就保存为这个节点的最短边
+                    ipq.insert(w, adj[i].wt());  // 保存当前边的权值
+                }
+                else if(adj[i].wt() < edgeTo[w].wt()){  // 如果保存过生成树到这个节点的最短边 但是当前的边更短 则替换
+                    edgeTo[w]=&adj[i];
+                    ipq.change(w, adj[i].wt());
+                }   
+            }
+        }
+    }
+
+public:
+    prim(Graph &g):G(g),ipq(IndexMinHeap<double>(g.V())){
+        assert(g.E()>0);
+
+        marked = new bool[G.V()];
+        for(int i=0; i<G.V();i++){
+            marked[i]=false;
+            edgeTo.push_back(nullptr);
+        }
+
+        mst.clear();
+
+        //prim
+        visit(0);
+        while(!ipq.isEmpty()){
+            int v = ipq.etractMinIndex();  // 取出此时生成树可以连接到的边中 权值最小的那个节点序号
+            mst.push_back(*edgeTo[v]);  // 把到这个节点的这条边加入到生成树中
+            visit(v);  // 访问这个新加入的节点
+        }
+
+        // 统计最小生成树的总权值
+        mstWeight = mst[0].wt();
+        for( int i = 1 ; i < mst.size() ; i ++ )
+            mstWeight += mst[i].wt();
+    }
+
+    ~prim(){
+        delete[] marked;
+    }
+
+    // 返回最小生成树
+    vector<Edge<Weight>> mstEdges(){
+        return mst;
+    };
+    
+    // 返回最小生成树的总权值
+    Weight result(){
+        return mstWeight;
+    };
+};
+
+#endif
+```
 kruskal算法 O(ElogE)  并查集
 
 ## 3.3 最短路径
