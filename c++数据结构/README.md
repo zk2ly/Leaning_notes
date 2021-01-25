@@ -1833,7 +1833,53 @@ public:
 
 ## 3.2 最小生成树 
 带权连通无向图  找V-1条边 连接v个顶点 使得生成树权值最小
+```c++
+#ifndef MY_EDGE
+#define MY_EDGE
 
+#include <iostream>
+#include <cassert>
+
+template<typename Weight>  // 权重可能是不同的数据类型
+class Edge{
+private:
+    int a,b;
+    Weight weight;
+
+public:
+    Edge(int a, int b, Weight weight){
+        this->a = a;
+        this->b = b;
+        this-> weight = weight;
+    }
+
+    // 空的构造函数 所有成员变量都取默认值
+    Edge(){}
+
+    ~Edge(){}
+
+    int v(){ return a;} // 返回第一个顶点
+    int w(){ return b;} // 返回第二个顶点
+    Weight wt(){ return weight;}    // 返回权值
+
+    // 给定一个顶点返回另一个顶点
+    int other(int x){
+        assert(x==a || x==b);
+        return x==a ? b : a;
+    }
+
+    // 边的大小比较, 是对边的权值的大小比较
+    bool operator < (Edge<Weight> &e){return weight < e.wt();}
+    bool operator > (Edge<Weight> &e){return weight > e.wt();}
+    bool operator <= (Edge<Weight> &e){return weight <= e.wt();}
+    bool operator >= (Edge<Weight> &e){return weight >= e.wt();}
+    bool operator == (Edge<Weight> &e){return weight == e.wt();}
+
+
+};
+
+#endif
+```
 prim算法 O(ElogV)  最小索引堆
 
 prim算法首先把原点加入生成树中，然后把生成树能达到各个节点的最短边加入最小堆中(没有变达到就不加入),然后从最小堆中取出权值最小的边，连接的节点加入生成树中，然后更新生成树能达到各个节点的最短边并维护堆，循环直至所有边都加入了生成树中。
@@ -1923,6 +1969,51 @@ public:
 ```
 kruskal算法 O(ElogE)  并查集
 
+kruskal先把所有边按权值从小到大排序，然后每次加入一条边不构成环即可，直至有v-1条边加入树中
+```c++
+template <typename Graph, typename Weight>
+class kruskal{
+private:
+    vector<Edge<Weight>> mst;  // 存所有边
+    Weight mstWeight;  // 总权值
+
+public:
+    kruskal(Graph &g){
+        minHeap<Edge<Weight>> pq(g.E());  // 最小堆存所有边
+
+        for(int v=0; v<g.V(); v++){  // 遍历所有结点
+            vector<Edge<Weight>> adj = g.adjE(v);  
+            for(int i=0;i<adj.size();i++){  // 结点的所有邻边
+                if(adj[i].v() < adj[i].w())  // 无权图中v->w w->v 是一条边 为了防止存两次 只在v<w时存一次
+                    pq.insert(adj[i]);
+            }
+        }
+
+        unionFind uf = unionFind(g.V());  // 并查集记录连接情况
+
+        while(!pq.isEmpty() && mst.size() < g.V()-1){
+            Edge<Weight> e = pq.extractMin();
+            if(uf.isConnected(e.v(), e.w()))  // 这条边的两个顶点如果已经相连接了 说明已经在树中 
+                continue;
+            mst.push_back(e);
+            uf.unionE(e.v(), e.w());
+        }
+
+    }
+
+    ~kruskal(){}
+
+    // 返回最小生成树的所有边
+    vector<Edge<Weight>> mstEdges(){
+        return mst;
+    }
+
+    // 返回最小生成树的权值
+    Weight result(){
+        return mstWeight;
+    }
+};
+```
 ## 3.3 最短路径
 带权连通图  
 
