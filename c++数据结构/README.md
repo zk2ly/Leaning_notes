@@ -1,5 +1,37 @@
-
-
+- [1.线型数据结构](#1线型数据结构)
+  - [1.1 O(n^2)的排序算法](#11-on2的排序算法)
+    - [1.1.1 选择排序](#111-选择排序)
+    - [1.1.2 插入排序](#112-插入排序)
+    - [1.1.3 冒泡排序](#113-冒泡排序)
+    - [1.1.4 希尔排序](#114-希尔排序)
+  - [1.2 O(nlogn)的排序算法](#12-onlogn的排序算法)
+    - [1.2.1 归并排序](#121-归并排序)
+    - [1.2.2 快速排序](#122-快速排序)
+- [2.树型数据结构](#2树型数据结构)
+  - [2.1 堆](#21-堆)
+    - [2.1.1 实现一个堆](#211-实现一个堆)
+    - [2.1.2 堆排序](#212-堆排序)
+    - [2.1.3 索引堆](#213-索引堆)
+  - [2.2 二分搜索树](#22-二分搜索树)
+    - [2.2.1 二分查找](#221-二分查找)
+    - [2.2.2 实现](#222-实现)
+  - [2.3 并查集](#23-并查集)
+    - [2.3.1 线性数据结构](#231-线性数据结构)
+    - [2.3.2 树型数据结构](#232-树型数据结构)
+    - [2.3.3 路径压缩](#233-路径压缩)
+- [3.图型数据结构](#3图型数据结构)
+  - [3.1 图基础](#31-图基础)
+    - [3.1.1 邻接矩阵和邻接表](#311-邻接矩阵和邻接表)
+    - [3.1.2 遍历邻边](#312-遍历邻边)
+    - [3.1.3 图的深度优先遍历](#313-图的深度优先遍历)
+    - [3.1.4 图的广度优先遍历](#314-图的广度优先遍历)
+  - [3.2 最小生成树](#32-最小生成树)
+    - [3.2.1 带权图的边](#321-带权图的边)
+    - [3.2.2 prim算法](#322-prim算法)
+    - [3.2.3 kruskal算法](#323-kruskal算法)
+  - [3.3 最短路径](#33-最短路径)
+    - [3.3.1 dijkstra算法](#331-dijkstra算法)
+  - [3.4 图的其他问题](#34-图的其他问题)
 # 1.线型数据结构
 ## 1.1 O(n^2)的排序算法
 ### 1.1.1 选择排序
@@ -2022,13 +2054,116 @@ public:
 
 ### 3.3.1 dijkstra算法 
 不能有负权变  O(ElogV)  最小索引堆
+```c++
+#ifndef MY_DIJKSTRA
+#define MY_DIJKSTRA
 
-### 3.3.2 bellman-ford算法 
+#include <iostream>
+#include <cassert>
+#include "Edge.h"
+#include "IndexMinHeap.h"
+#include <vector>
+#include <stack>
 
-可以有负权变 不能有负权环
+using namespace std;
 
-## 3.4 补充：
+template<typename Graph, typename Weight>
+class dijkstra{
+private:
+    Graph &G;  // 图的引用
+    int s;  // 原点
+    Weight *disTo;  // 原点到各店的最短距离的数组
+    bool *marked;  // 标记是否访问过的数组
+    vector<Edge<Weight> *> from;  // 最短路径中 当前点的上一个点
+
+public:
+    dijkstra(Graph &g, int s):G(g){
+        this->s = s;
+        disTo = new Weight[G.V()];
+        marked = new bool[G.V()];
+        IndexMinHeap<Weight> ipq(G.V());  // 使用索引堆记录当前找到的到达每个顶点的最短距离
+        
+        for(int i=0;i<G.V();i++){
+            disTo[i] = Weight();
+            marked[i] = false;
+            from.push_back(nullptr);
+        }
+
+        disTo[s] = Weight();
+        from[s] = new Edge<Weight>(s,s,Weight());
+        marked[s] = true;
+        ipq.insert(s, disTo[s]);  // 到点s的最短距离入队
+
+        while(!ipq.isEmpty()){
+            int v = ipq.etractMinIndex();
+            marked[v] = true;
+
+            vector<Edge<Weight>> adj = G.adjE(v);
+            for(int i=0; i<adj.size();i++){
+                int w = adj[i].other(v);
+                if(!marked[w]){
+                    if(from[w]==nullptr || disTo[v] + adj[i].wt() < disTo[w]){
+                        disTo[w] = disTo[v] + adj[i].wt();
+                        from[w] = v;
+                        if(ipq.contain(w))
+                            ipq.change(w, disTo[w]);
+                        else
+                            ipq.insert(w, disTo[w]);
+                    }
+                }
+            }
+
+        }
+    }
+
+    ~dijkstra(){
+        delete[] disTo;
+        delete[] marked;
+        delete from[s];
+    }
+
+    // 返回从s点到w点的最短路径长度
+    Weight shortestPathTo( int w ){
+        return disTo[w];
+    }
+
+    // 判断从s点到w点是否联通
+    bool hasPathTo( int w ){
+        return marked[w];
+    }
+
+     // 寻找从s到w的最短路径, 将整个路径经过的边存放在vec中
+    void shortestPath( int w, vector<Edge<Weight>> &vec ){
+
+        assert( w >= 0 && w < G.V() );
+        assert( hasPathTo(w) );
+
+        // 通过from数组逆向查找到从s到w的路径, 存放到栈中
+        stack<Edge<Weight>*> s;
+        Edge<Weight> *e = from[w];
+        while( e->v() != this->s ){
+            s.push(e);
+            e = from[e->v()];
+        }
+        s.push(e);
+
+        // 从栈中依次取出元素, 获得顺序的从s到w的路径
+        while( !s.empty() ){
+            e = s.top();
+            vec.push_back( *e );
+            s.pop();
+        }
+    }
+};
+
+
+#endif
+```
+## 3.4 图的其他问题
+
+有负权边 没有负权换 bellman-ford算法
 
 拓扑排序 解决有向无环图的单源最短路径问题
 
 floyed算法解决无负权环的所有对最短路径算法
+
