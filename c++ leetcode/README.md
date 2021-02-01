@@ -94,7 +94,240 @@ O(1) 数据增多 需要的空间不变
 因此一般元素个数变成容量的1/4时才回收空间，而且是回收容量的1/2
 
 # 2.数组
+## 2.1 要学会优化算法
+283.移动零
+给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
 
+示例:
+输入: [0,1,0,3,12]
+输出: [1,3,12,0,0]
+
+说明:
+必须在原数组上操作，不能拷贝额外的数组。
+尽量减少操作次数。
+```c++
+// 第一感觉 用两个指针i j  i遍历数组 j记录当前赋值位置 非零则赋值 遍历完毕后 j及其后面的都赋值为0
+// 算法遍历了一遍数组 时间O(n) 空间O(1)
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        unsigned j = 0; // 当前要赋值的位置
+        for(unsigned i=0; i< nums.size(); i++)
+            if(nums[i])
+                nums[j++] = nums[i];
+
+        while(j<nums.size()){
+            nums[j++] = 0;
+        }
+    }
+};
+```
+这里遍历了一遍数组，然后又用j遍历了部分数组，如果要求只能遍历一遍数组元素呢?
+```c++
+// 用快速排序的思想 选0做partition 遇到不为0的就交换到前面 
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        unsigned j = 0; // [0,j) 都是非0数组
+        for(unsigned i =0; i<nums.size(); i++)  // 遍历过程中 [0,j)非零 [j,i]为零
+            if(nums[i])
+                if(i==j)  // 指向一个元素时 不用交换 减少消耗
+                    j++;
+                else
+                    swap(nums[j++], nums[i]);  
+    }
+};
+```
+## 2.2 三路快排partition思路的应用
+75.颜色分类
+给定一个包含红色、白色和蓝色，一共 n 个元素的数组，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
+此题中，我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。
+
+示例 ：
+输入：nums = [2,0,2,1,1,0]
+输出：[0,0,1,1,2,2]
+示例 2：
+
+提示：
+n == nums.length
+1 <= n <= 300
+nums[i] 为 0、1 或 2
+```c++
+// 第一感觉 计数排序 编译一遍数组 记录0,1,2的数量  再遍历一遍数组 重新给数组赋值
+// 时间O(n) 空间O(1)
+class Solution {
+public:
+    // 编译一遍数组 记录0,1,2的数量  再遍历一遍数组 重新给数组赋值
+    void sortColors(vector<int>& nums) {
+        int x=0,y=0,z=0;
+        for(unsigned i=0; i<nums.size(); i++)
+            if(nums[i]==0)
+                x++;
+            else if(nums[i]==1)
+                y++;
+            else
+                z++;
+            
+        int i=0;
+        while(x--) nums[i++] = 0;
+        while(y--) nums[i++] = 1;
+        while(z--) nums[i++] = 2;
+    }
+};
+```
+如果要求只遍历一遍数组，可以用快速排序，因为有大量重复元素，用三路快排
+```c++
+class Solution {
+public:
+    // 遍历数组 分为小于1，等于1，大于1三部分 
+    // [0,zero)小于1 [zero, i)等于1 (two,n-1] 大于1
+    void sortColors(vector<int>& nums) {
+        int zero =0, two = nums.size()-1;
+
+        for(int i =0; i<=two; ){
+            if(nums[i]==0)
+                swap(nums[zero++], nums[i++]);
+            else if(nums[i]==1)
+                i++;
+            else if(nums[i]==2)
+                swap(nums[i], nums[two--]);
+        }
+    }
+};
+```
+**有中间数的数组重排问题，都可以考虑使用快速排序**
+## 2.3 对撞指针
+167.两数之和 II 
+给定一个已按照升序排列 的有序数组，找到两个数使得它们相加之和等于目标数。
+函数应该返回这两个下标值 index1 和 index2，其中 index1 必须小于 index2。
+
+说明:
+返回的下标值（index1 和 index2）不是从零开始的。
+你可以假设每个输入只对应唯一的答案，而且你不可以重复使用相同的元素。
+
+示例:
+输入: numbers = [2, 7, 11, 15], target = 9
+输出: [1,2]
+解释: 2 与 7 之和等于目标数 9 。因此 index1 = 1, index2 = 2 。
+```c++
+// 第一感觉 两个指针一前一后 相加大了 右指针左移  相加小了 左指针右移
+// 时间O(n) 空间O(1)
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& numbers, int target) {
+        vector<int> res;
+
+        if(numbers.size() == 0)
+            return res;
+
+        int i=0, j=numbers.size()-1;
+        while(i<j){
+            if(numbers[i] + numbers[j] == target){
+                res.push_back(i+1);
+                res.push_back(j+1);
+                break;
+            }
+            else if(numbers[i] + numbers[j] > target)
+                j--;
+            else
+                i++;
+        }
+
+        return res;
+    }
+};
+```
+## 2.4 滑动窗口
+209.长度最小的子数组
+给定一个含有 n 个正整数的数组和一个正整数 s ，找出该数组中满足其和 ≥ s 的长度最小的 连续 子数组，并返回其长度。如果不存在符合条件的子数组，返回 0。
+
+示例：
+输入：s = 7, nums = [2,3,1,2,4,3]
+输出：2
+解释：子数组 [4,3] 是该条件下的长度最小的子数组。
+
+```c++
+// 维护滑动窗口[i,j] 且res保存了[0,j]中>=s的最小连续数组的长度 如果和>=s  i++  如果和<s j++
+class Solution {
+public:
+    // 维护滑动窗口[i,j] 
+    // 如果[i,j]元素和sum>=s  i++  如果和sum<s j++  
+    int minSubArrayLen(int s, vector<int>& nums) {
+        int i=0, j=-1;
+        int sum=0;
+        int res = nums.size() + 1;
+
+        while(i < nums.size()){
+            if(j+1<nums.size() && sum<s)
+                sum += nums[++j];
+            else  // j 是最后一个元素 或者 sum >=s
+                sum -= nums[i++];
+
+            if(sum >= s)
+                res = min(res, j-i+1);
+        }
+
+        if(res == nums.size()+1)
+            return 0;
+        return res;
+    }
+};
+```
+## 2.5 在滑动窗口中做记录
+3.无重复字符的最长子串
+给定一个字符串，请你找出其中不含有重复字符的 最长子串 的长度。
+
+ 
+示例 1:
+输入: s = "abcabcbb"
+输出: 3 
+解释: 因为无重复字符的最长子串是 "abc"，所以其长度为 3。
+
+示例 2:
+输入: s = "bbbbb"
+输出: 1
+解释: 因为无重复字符的最长子串是 "b"，所以其长度为 1。
+示例 3:
+
+输入: s = "pwwkew"
+输出: 3
+解释: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+     请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+
+示例 4:
+输入: s = ""
+输出: 0
+ 
+
+提示：
+0 <= s.length <= 5 * 104
+s 由英文字母、数字、符号和空格组成
+```c++
+// 滑动窗口[l,r]内没有重复字符 s保存窗口中有的字符 如果当前字符不包含其中 r++ 如果包含其中 l++直到不包含
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int l=0, r=-1;  // 初始没有字符[0,-1]
+        int res = 0;
+        bool u[128]{false}; 
+
+        // l==0 r==-1开始 
+        // l==n  r==n-1结束
+        while(l<s.size()){
+            if(!u[s[r+1]] && r+1 < s.size()){
+                r++;
+                u[s[r]] = true;
+                res = max(res, r-l+1); 
+            }
+            else{  // r+1这个元素包含在窗口中
+                u[s[l]] = false;
+                l++;
+            }
+        }
+        return res;
+    }
+};
+```
 # 3.查找表
 
 # 4.链表
