@@ -1,36 +1,43 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
-
 class Solution {
 public:
-    // 滑动窗口[l,r]内没有重复字符 u保存窗口中有的字符 如果当前字符不包含其中 r++ 如果包含其中 l++直到不包含
-    int lengthOfLongestSubstring(string s) {
-        int l=0, r=-1;  // 初始没有字符[0,-1]
-        int res = 0;
-        int u[128]{0}; 
+    // 二分搜索  没查找到返回插入位置
+    int searchInsert(vector<int>& nums, int target) {
+        int l = 0, r = nums.size()-1;
+        bool flag=false;
 
-        // l==0 r==-1开始 
-        // l==n  r==n-1结束
-        while(l<s.size()){
-            if(!u[s[r+1]] && r+1 < s.size()){
-                r++;
-                u[s[r]] = true;
-                res = max(res, r-l+1); 
+        // [l,r]中查找
+        while(l<=r){
+            int mid = l + (r-l)/2;
+            if(nums[mid] == target)
+                return mid;
+            else if(nums[mid] < target)
+                l = mid + 1;
+            else{
+                r = mid - 1;
+                flag = true;
             }
-            else{  // r+1这个元素包含在窗口中
-                u[s[l]] = false;
-                l++;
-            }
+                
         }
-        return res;
+        
+        // 如果没找到 r左移 说明这个数小于原来的nums[mid] 即应该插入在mid的位置 即r当前的位置+1
+        // l右移 说明这个数大于原来的nums[mid] 即应该插在mid+1的位置 即当前l的位置
+        return flag ? r+1:l ;
     }
 };
 
 int main(){
+    // vector<int> nums = {3,2,4};
+    // vector<int> res = Solution().twoSum(nums, 6);
+    // for(int i=0; i<res.size();i++)
+    //     cout<<res[i]<<' ';
+    // cout<<endl;
 
     return 0;
 }
