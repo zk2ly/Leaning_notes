@@ -6,38 +6,47 @@
 using namespace std;
 
 class Solution {
+private:
+    int need[128];
 public:
-    // 二分搜索  没查找到返回插入位置
-    int searchInsert(vector<int>& nums, int target) {
-        int l = 0, r = nums.size()-1;
-        bool flag=false;
+    string minWindow(string s, string t) {
+        // 此时窗口需要的字符和需要的个数
+        for(string::size_type i =0; i<t.szie();i++)
+            need[t[i]]++;
+        int needCnt = t.size();
 
-        // [l,r]中查找
-        while(l<=r){
-            int mid = l + (r-l)/2;
-            if(nums[mid] == target)
-                return mid;
-            else if(nums[mid] < target)
-                l = mid + 1;
-            else{
-                r = mid - 1;
-                flag = true;
+        // 窗口[i,j]  
+        int i=0,j=-1;
+        int len=s.size()-1, start = 0;
+        while(j<s.size()){
+            while(!needCnt && i+1<s.size()){  // 没有需要的元素了 即窗口内包含所有元素 尝试去掉第一个元素
+                need[i]++;  // 去掉一个 还需要一个 如果本身是多余的 那么加进来的时侯会减成负数 此时加1 不会大于0
+                if(need[i]) needCnt++;
+                i++;
             }
-                
+
+            if(j+1 < t.size() && need[j+1]){
+                j++;
+                need[j]--;
+                needCnt--;
+            }
+
+            if(!needCnt){
+                if((j-i+1) < num){
+                    num = j-i+1;
+                    start = i;
+                }
+            }
+
         }
+
         
-        // 如果没找到 r左移 说明这个数小于原来的nums[mid] 即应该插入在mid的位置 即r当前的位置+1
-        // l右移 说明这个数大于原来的nums[mid] 即应该插在mid+1的位置 即当前l的位置
-        return flag ? r+1:l ;
     }
 };
 
 int main(){
-    // vector<int> nums = {3,2,4};
-    // vector<int> res = Solution().twoSum(nums, 6);
-    // for(int i=0; i<res.size();i++)
-    //     cout<<res[i]<<' ';
-    // cout<<endl;
+    // string s = "A man, a plan, a canal: Panama";
+    // Solution().isPalindrome(s);
 
     return 0;
 }
