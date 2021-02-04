@@ -340,8 +340,104 @@ public:
 };
 ```
 
-
 # 3.查找表
+## 3.1 set的使用
+349 给定两个数组，编写一个函数来计算它们的交集。
+
+示例 1：
+输入：nums1 = [1,2,2,1], nums2 = [2,2]
+输出：[2]
+
+示例 2：
+输入：nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+输出：[9,4]
+ 
+说明：
+输出结果中的每个元素一定是唯一的。
+我们可以不考虑输出结果的顺序。
+```c++
+class Solution {
+public:
+    // set1保存nums1中的元素 遍历nums2 保存交集到set2中
+    // 时间O(nlogn) 因为使用二叉搜索树实现 查找和插入都是logn  空间O(n)
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        set<int> set1(nums1.begin(), nums1.end());
+        set<int> set2;
+
+        for(int i=0; i<nums2.size();i++)
+            if(set1.find(nums2[i]) != set1.end())
+                set2.insert(nums2[i]);
+        
+        vector<int> v(set2.begin(), set2.end());
+
+        return v;
+    }
+};
+```
+## 3.2 map的使用
+350 两个数组的交集 II
+给定两个数组，编写一个函数来计算它们的交集。
+
+示例 1：
+输入：nums1 = [1,2,2,1], nums2 = [2,2]
+输出：[2,2]
+
+示例 2:
+输入：nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+输出：[4,9]
+ 
+
+说明：
+输出结果中每个元素出现的次数，应与元素在两个数组中出现次数的最小值一致。
+我们可以不考虑输出结果的顺序。
+```c++
+class Solution {
+public:
+    // map1保存nums1的键值对 遍历nums2 如果在map1中找到了 放入vec中 并且map1对应--
+    // 时间O(nlogn) 空间O(n)
+    vector<int> intersect(vector<int>& nums1, vector<int>& nums2) {
+        map<int,int> map1;
+        vector<int> vec;
+
+        for(int i=0; i<nums1.size(); i++)
+            map1[nums1[i]] +=1;
+        
+        for(int i=0; i<nums2.size(); i++)
+            if(map1[nums2[i]]>0){
+                vec.push_back(nums2[i]);
+                map1[nums2[i]]-=1;
+            }
+
+        return vec;
+    }
+};
+```
+## 3.3 set和map不同的底层实现
+set和map底层用树实现 最大的优点是有序性 但是操作都是logn级别的 还有另一种哈希表的实现 unordered_set和unordered_map 操作都是O(1)级别的 但是无序
+
+作业：
+136 可以用哈希表即unordered_map记录 然后遍历map选出该数，时空都是O(n)；还可以用异或运算，因为自己和自己异或为0，0和任何数异或等于数本身，空间O(1)
+242
+202
+290
+205
+## 3.4 查找表的经典问题-两数之和
+1
+作业
+15
+16
+18
+## 3.5 灵活选择键值
+454 447
+作业
+49
+149
+
+## 3.6 查找表和滑动窗口
+219
+
+## 3.7 查找表用二分搜索树实现的顺序性
+220
 
 # 4.链表
 
