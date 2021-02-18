@@ -41,6 +41,7 @@
         "streambuf": "cpp",
         "typeinfo": "cpp",
         "ctime": "cpp",
-        "cassert": "cpp"
+        "cassert": "cpp",
+        "set": "cpp"
     }
 }
