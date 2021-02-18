@@ -1,37 +1,40 @@
 #include <iostream>
-#include <vector>
-#include <string>
 #include <set>
-#include <map>
-// #include <unordered_map>
-#include <algorithm>
 
 using namespace std;
 
 class Solution {
 public:
-    bool isHappy(int n) {
-        int res=0;
+    bool wordPattern(string pattern, string s) {
+        map<char, string> recode;
+        set<string> contain;
+        stringstream ss(s);
+        string str;
 
-        while(n<INT_MAX){
-            while(n){
-                res += (n%10)*(n%10);
-                n /= 10;
+        for(int i =0; i<pattern.size();i++){
+
+        
+            ss>>str;
+
+            if(str.empty()) return false;
+
+            char c = pattern[i];
+            if(recode.find(c)==recode.end()){
+                // if(contain.find(str) != contain.end()) return false;
+                recode[c] = str;
+                contain.insert(str);
+            }else{
+                if(recode[c] != str)
+                    return false;
             }
-            if(res==1)
-                return true;
-            n = res;
-            res = 0;
-            cout<<n<<endl;
         }
-
-        cout<<"false"<<endl;
-        return false;
+        return true;
+         
     }
 };
 
 int main(){
-    Solution().isHappy(19);
 
     return 0;
 }
+
