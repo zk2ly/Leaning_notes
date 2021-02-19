@@ -6,30 +6,21 @@
 using namespace std;
 
 class Solution {
+private:
+    int dis(int x1, int y1, int x2, int y2)
+        return (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2);
 public:
-    int threeSumClosest(vector<int>& nums, int target) {
-        int res=INT_MAX;
-        int ans;
-        int i,j;
-        sort(nums.begin(),nums.end());
-        for(int k=0;k<nums.size();k++){
-            if(k>0 && nums[k]==nums[k-1]) continue;
-            i=k+1;
-            j=nums.size()-1;
-            while(i<j){
-                int sum = nums[k] + nums[i] + nums[j];
-                if(sum - target == 0) return sum;
-                if(abs(sum-target) < res){
-                    res = abs(sum-target);
-                    ans = sum;
-                }
-                if(sum > target)
-                    j--;
-                else
-                    i++;
-            }
+    int numberOfBoomerangs(vector<vector<int>>& points) {
+        if(points.size()<3) return 0;
+        int d, ans=0;
+        unordered_map<int,int> recode;
+        for(int i=0;i<points.size();i++){
+            for(int j=i+1;j<points.size();j++){
+                d = dis(points[i][0],points[i][1], points[j][0],points[j][1]);
+                if(recode.count(d)) 
+                    ans += recode[d];
+                ++recode[d];            
         }
-        return ans;
+        recode.clear();    
     }
 };
-
