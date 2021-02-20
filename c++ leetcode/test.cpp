@@ -6,21 +6,22 @@
 using namespace std;
 
 class Solution {
-private:
-    int dis(int x1, int y1, int x2, int y2)
-        return (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2);
 public:
-    int numberOfBoomerangs(vector<vector<int>>& points) {
-        if(points.size()<3) return 0;
-        int d, ans=0;
-        unordered_map<int,int> recode;
-        for(int i=0;i<points.size();i++){
-            for(int j=i+1;j<points.size();j++){
-                d = dis(points[i][0],points[i][1], points[j][0],points[j][1]);
-                if(recode.count(d)) 
-                    ans += recode[d];
-                ++recode[d];            
+    vector<vector<string>> groupAnagrams(vector<string>& strs) {
+        if(strs.size()==0) return {};
+
+        unordered_map<string, vector<string>> recode;
+        for(auto str:strs){
+            string key = str;
+            sort(key.begin(),key.end());
+            recode[key].emplace_back(str);
         }
-        recode.clear();    
+
+        vector<vector<string> > ans;
+        for(auto it=recode.begin(); it!=recode.end();it++)
+            ans.emplace_back(it->second);
+
+        
+        return ans;     
     }
 };
