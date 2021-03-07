@@ -524,7 +524,39 @@ struct ListNode{
 199 层序遍历： 每次只保存每层的最后一个元素
 
 ## 5.4 BFS和图的最短路径
-279 
+279 这一题主要是图的构建，一个数是一个点 如果这个数到另一个数相隔一个完全平方数 那么两点之间就有一条连线，从n开始到0结束，构成一个无权图，无权图的最短路径用BFS.因为入队的过程中，小的数先入队了，所以他的step一定已经是离n最小的step了，因此要标记为已经访问过了，对于已经访问过的节点，经过他去0的路线也一定访问过了，因此不再入队进行访问.
+
+这一题还可以优化一下返回的时机和num-i*i的计算次数，可以使时间缩短到下面代码的1/3.
+```c++
+class Solution {
+public:
+    int numSquares(int n) {
+        queue<pair<int,int>> q;
+        q.push(make_pair(n,0));
+        
+        vector<bool> visited(n+1,false);
+        visited[n] = true;
+
+        while(!q.empty()){
+            int num = q.front().first;
+            int step = q.front().second;
+            q.pop();
+
+            if(num==0) return step; //走到0 返回此时走的步数
+
+            for(int i=1; num-i*i>=0;i++){
+                if(!visited[num-i*i]){
+                    visited[num-i*i] = true;
+                    q.push(make_pair(num-i*i,step+1));
+                }
+                    
+            }
+        }
+
+        return -1;
+    }
+};
+```
 
 127  
 
