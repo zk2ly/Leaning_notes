@@ -584,7 +584,7 @@ priority_queue<pair<int,int>, vector<pair<int,int>>, function<bool(pair<int,int>
 priority_queue<pair<int,int>, vector<pair<int,int>>, decltype(&myCmp)> q(myCmp);
 ```
 
-23  
+23  合并k个升序链表 : 1.每次合并两个链表 超过25% 2.用分治法两两合并 超过92%  3.用优先队列维护每个链表的第一个节点 每次取出值最小的节点 超过81%
 # 6.二叉树和递归
 ## 6.1 二叉树天然的递归结构
 104 
