@@ -557,7 +557,6 @@ public:
     }
 };
 ```
-
 127  
 
 126 
@@ -565,7 +564,25 @@ public:
 286 
 
 ## 5.5 优先队列
-347 
+347 优先队列priority_queue就是堆 默认创建最大堆 如果要创建最小堆使用priority_queue<int,vector<int>,greater<int>>意思是用数组建堆 里面是int型 比堆顶大时入堆.本题把(数字，频率)存在一个哈希表中，然后便利哈希表，维护一个前k大的出现频率的元素，最后依次出队到数组即可。因为这里建堆要比较频率，最后需要的又是数字，因此堆中应该保存pair<int,int>  默认按第一个排序，因此应该是(频率，数字)的顺序。
+
+关于优先队列的基础知识
+```c++
+// 最大堆
+priority_queue<int> pq;
+
+// 最小堆
+priority_queue<int, vector<int>, greater<int>> pq2;
+
+
+// 自定义堆 对比函数要定义成静态变量
+// 最小堆 保存前k大的元素 所以大的元素应该优先  即大的元素返回true
+static bool myCmp(pair<int,int> a , pair<int,int> b){
+    return a.second>b.second?a:b;
+}
+priority_queue<pair<int,int>, vector<pair<int,int>>, function<bool(pair<int,int>,pair<int,int>)>> pq3(myCmp);
+priority_queue<pair<int,int>, vector<pair<int,int>>, decltype(&myCmp)> q(myCmp);
+```
 
 23  
 # 6.二叉树和递归
