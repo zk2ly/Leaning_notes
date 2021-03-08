@@ -528,37 +528,180 @@ struct ListNode{
 
 这一题还可以优化一下返回的时机和num-i*i的计算次数，可以使时间缩短到下面代码的1/3.
 ```c++
+// 一个数是一个点 如果这个数到另一个数相隔一个完全平方数 那么两点之间就有一条连线
+// 无权图的最短路径用BFS
 class Solution {
 public:
     int numSquares(int n) {
-        queue<pair<int,int>> q;
-        q.push(make_pair(n,0));
-        
+        queue<int> q;
+        q.push(n);
+        int step = 0;
+
         vector<bool> visited(n+1,false);
-        visited[n] = true;
-
         while(!q.empty()){
-            int num = q.front().first;
-            int step = q.front().second;
-            q.pop();
-
-            if(num==0) return step; //走到0 返回此时走的步数
-
-            for(int i=1; num-i*i>=0;i++){
-                if(!visited[num-i*i]){
-                    visited[num-i*i] = true;
-                    q.push(make_pair(num-i*i,step+1));
+            int size = q.size();
+            for(int i=0;i<size;i++){
+                int num = q.front();
+                q.pop();
+                for(int j=1;num-j*j>=0;j++){
+                    int a = num-j*j;
+                    if(a==0) return step+1;
+                    if(!visited[a]){
+                        visited[a]=true;
+                        q.push(a);
+                    }
                 }
-                    
             }
+            step++;
         }
-
-        return -1;
+        return 0;
     }
 };
 ```
 127  
+解法一：
+```c++
+// 确定两个单词是否可以互相转换 题目保证单词长度均一致
+bool exchange(const string &s1, const string &s2){
+    int time = 0;
+    int len = s1.size();
+    for(int i=0;i<len;i++){
+        if(s1[i]!=s2[i])
+            time++;
+        if(time>1)  return false;
+    }
 
+    return time==1;
+}
+
+// 最短路径
+int ladderLength(string beginWord, string endWord, vector<string>& wordList){
+    // 先保存缩有的单词到set中 如果终点单词没有在set中 直接返回0
+    unordered_set<string> word_set(wordList.begin(),wordList.end());
+    if(word_set.count(endWord)==0)  return 0;
+
+    // 建立一个队列 把起点单词入队 此时长度step=1
+    queue<string> q;
+    q.push(beginWord);
+    word_set.erase(beginWord);
+    int step = 1;
+    
+    // BFS
+    while(!q.empty()){
+        int size = q.size();
+        // 遍历一层中的所有节点
+        for(int i=0;i<size;i++){
+            string cur_word = q.front();
+            q.pop();
+            vector<string>  tmp;
+            // 如果当前节点可以转换成set中的某个节点 那么把转换之后的这个节点入队作为下一层要遍历的节点  并且记录 
+            for(const string &to_word:word_set){
+                if(exchange(cur_word,to_word)){
+                    if(to_word == endWord)  return step+1;
+                    q.push(to_word);
+                    tmp.push_back(to_word);
+                }
+            }
+            // 在set中删除已经遍历过的节点
+            for(const auto &str : tmp)
+                word_set.erase(str);
+        }
+        // 每遍历一层 长度加1
+        step++;
+    }
+
+    return 0;
+}
+```
+解法二：
+```c++
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList){
+        // 创建set保存所有字符串 如果终点字符串不在其中 那么直接返回0
+        unordered_set<string> word_set(wordList.begin(),wordList.end());
+        if(word_set.count(endWord)==0)  return 0;
+
+        int len = beginWord.length();
+        queue<string> q;
+        q.push(beginWord);
+        int step = 1;
+
+        // BFS
+        while(!q.empty()){
+            int size = q.size();
+            for(int i=0;i<size;i++){
+                string cur_word = q.front();
+                q.pop();
+                for(int i=0;i<len;i++){     // 对于每一层的字符串 用a-z分别改变每一个字符 判断改变后的字符是否在set中 如果在那么入队 并且从set中删除  如果改变的字符就是终点字符串 直接返回step+1
+                    char tmp = cur_word[i];
+                    for(char j='a'; j<='z';j++){
+                        cur_word[i] = j;
+                        if(word_set.count(cur_word)==0) continue;
+                        if(cur_word==endWord)   return step+1;
+                        q.push(cur_word);
+                        word_set.erase(cur_word);  
+                    }
+                    cur_word[i]=tmp;
+                }
+            }
+            step++;
+        }
+        return 0;
+    }
+
+};
+```
+解法三: 双向BFS 这里用set代替了queue 在bfs中 queue的目的是保存一层的节点 然后把这一层节点出队 把他可以到的下一层节点全部入队 可以用两个set一个代表当前层所有节点 另一个保存下一层所有节点
+
+每次拓展小的set是一步优化，如果每次都是各向前拓展一步，那么时间将会是两倍(可能拓展一步后，加入的新字符串非常多，因此遍历时更耗时间，所以每次遍历字符串少的set比较好)
+```c++
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        // 创建set保存所有字符串 如果终点字符串不在其中 那么直接返回0
+        unordered_set<string> dict(wordList.begin(), wordList.end());        
+        if (!dict.count(endWord)) return 0;
+        
+        int l = beginWord.length();
+        
+        unordered_set<string> q1{beginWord};
+        unordered_set<string> q2{endWord};
+                
+        int step = 0;
+        
+        while (!q1.empty() && !q2.empty()) {
+            ++step;
+            
+            // 每次拓展小的set是一步优化，如果每次都是各向前拓展一步，那么时间将会是两倍(可能拓展一步后，加入的新字符串非常多，因此遍历时更耗时间，所以每次遍历字符串少的set比较好)
+            if (q1.size() > q2.size())
+                std::swap(q1, q2);
+                        
+            unordered_set<string> q;  // 保存下一层的字符串
+            // 遍历当前层字符串 用a-z改变每一个字符串的每一个字符 改变后的字符串 如果已经在另一个集合中出现了 那么直接返回当前step+1 
+            // 否则看是否是列表中的字符串 如果是就入队并在列表中删除 否则直接跳过 
+            for (string w : q1) {   
+                for (int i = 0; i < l; i++) {
+                    char ch = w[i];
+                    for (int j = 'a'; j <= 'z'; j++) {
+                        w[i] = j;
+                        if (q2.count(w)) return step + 1;
+                        if (!dict.count(w)) continue;                        
+                        dict.erase(w);
+                        q.insert(w);
+                    }
+                    w[i] = ch;
+                }
+            }
+            
+            // 把下一层的字符串给q1
+            std::swap(q, q1);
+        }
+        
+        return 0;
+    }
+};
+```
 126 
 
 286 
