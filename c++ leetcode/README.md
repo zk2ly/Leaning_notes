@@ -527,6 +527,8 @@ struct ListNode{
 279 这一题主要是图的构建，一个数是一个点 如果这个数到另一个数相隔一个完全平方数 那么两点之间就有一条连线，从n开始到0结束，构成一个无权图，无权图的最短路径用BFS.因为入队的过程中，小的数先入队了，所以他的step一定已经是离n最小的step了，因此要标记为已经访问过了，对于已经访问过的节点，经过他去0的路线也一定访问过了，因此不再入队进行访问.
 
 这一题还可以优化一下返回的时机和num-i*i的计算次数，可以使时间缩短到下面代码的1/3.
+
+备注：这一题可以用set 一个保存当前层 一个保存下一层 把没有访问过的且差为平方数的数字作为下一层节点入队 然后再交换两个set即可
 ```c++
 // 一个数是一个点 如果这个数到另一个数相隔一个完全平方数 那么两点之间就有一条连线
 // 无权图的最短路径用BFS
@@ -561,60 +563,6 @@ public:
 127  
 解法一：
 ```c++
-// 确定两个单词是否可以互相转换 题目保证单词长度均一致
-bool exchange(const string &s1, const string &s2){
-    int time = 0;
-    int len = s1.size();
-    for(int i=0;i<len;i++){
-        if(s1[i]!=s2[i])
-            time++;
-        if(time>1)  return false;
-    }
-
-    return time==1;
-}
-
-// 最短路径
-int ladderLength(string beginWord, string endWord, vector<string>& wordList){
-    // 先保存缩有的单词到set中 如果终点单词没有在set中 直接返回0
-    unordered_set<string> word_set(wordList.begin(),wordList.end());
-    if(word_set.count(endWord)==0)  return 0;
-
-    // 建立一个队列 把起点单词入队 此时长度step=1
-    queue<string> q;
-    q.push(beginWord);
-    word_set.erase(beginWord);
-    int step = 1;
-    
-    // BFS
-    while(!q.empty()){
-        int size = q.size();
-        // 遍历一层中的所有节点
-        for(int i=0;i<size;i++){
-            string cur_word = q.front();
-            q.pop();
-            vector<string>  tmp;
-            // 如果当前节点可以转换成set中的某个节点 那么把转换之后的这个节点入队作为下一层要遍历的节点  并且记录 
-            for(const string &to_word:word_set){
-                if(exchange(cur_word,to_word)){
-                    if(to_word == endWord)  return step+1;
-                    q.push(to_word);
-                    tmp.push_back(to_word);
-                }
-            }
-            // 在set中删除已经遍历过的节点
-            for(const auto &str : tmp)
-                word_set.erase(str);
-        }
-        // 每遍历一层 长度加1
-        step++;
-    }
-
-    return 0;
-}
-```
-解法二：
-```c++
 class Solution {
 public:
     int ladderLength(string beginWord, string endWord, vector<string>& wordList){
@@ -622,6 +570,7 @@ public:
         unordered_set<string> word_set(wordList.begin(),wordList.end());
         if(word_set.count(endWord)==0)  return 0;
 
+        word_set.erase(beginWord); // 可能有 删除 免得变换成别的单词又变换回来 浪费时间
         int len = beginWord.length();
         queue<string> q;
         q.push(beginWord);
@@ -652,7 +601,7 @@ public:
 
 };
 ```
-解法三: 双向BFS 这里用set代替了queue 在bfs中 queue的目的是保存一层的节点 然后把这一层节点出队 把他可以到的下一层节点全部入队 可以用两个set一个代表当前层所有节点 另一个保存下一层所有节点
+解法二: 双向BFS 这里用set代替了queue 在bfs中 queue的目的是保存一层的节点 然后把这一层节点出队 把他可以到的下一层节点全部入队 可以用两个set一个代表当前层所有节点 另一个保存下一层所有节点
 
 每次拓展小的set是一步优化，如果每次都是各向前拓展一步，那么时间将会是两倍(可能拓展一步后，加入的新字符串非常多，因此遍历时更耗时间，所以每次遍历字符串少的set比较好)
 ```c++
@@ -670,7 +619,7 @@ public:
                 
         int step = 0;
         
-        while (!q1.empty() && !q2.empty()) {
+        while (!q1.empty() && !q2.empty()) {    // 有一个为空说明没有下一层节点了 不能连通
             ++step;
             
             // 每次拓展小的set是一步优化，如果每次都是各向前拓展一步，那么时间将会是两倍(可能拓展一步后，加入的新字符串非常多，因此遍历时更耗时间，所以每次遍历字符串少的set比较好)
@@ -685,7 +634,7 @@ public:
                     char ch = w[i];
                     for (int j = 'a'; j <= 'z'; j++) {
                         w[i] = j;
-                        if (q2.count(w)) return step + 1;
+                        if (q2.count(w)) return step + 1;   // 先要判断在不在q2中 因为不在set中可能是因为已经到q2中去了
                         if (!dict.count(w)) continue;                        
                         dict.erase(w);
                         q.insert(w);
@@ -702,9 +651,8 @@ public:
     }
 };
 ```
-126 
+126 BFS+DFS 后面再做 
 
-286 
 
 ## 5.5 优先队列
 347 优先队列priority_queue就是堆 默认创建最大堆 如果要创建最小堆使用priority_queue<int,vector<int>,greater<int>>意思是用数组建堆 里面是int型 比堆顶大时入堆.本题把(数字，频率)存在一个哈希表中，然后便利哈希表，维护一个前k大的出现频率的元素，最后依次出队到数组即可。因为这里建堆要比较频率，最后需要的又是数字，因此堆中应该保存pair<int,int>  默认按第一个排序，因此应该是(频率，数字)的顺序。
@@ -732,7 +680,7 @@ priority_queue<pair<int,int>, vector<pair<int,int>>, decltype(&myCmp)> q(myCmp);
 ## 6.1 二叉树天然的递归结构
 104 
 
-111
+111 
 ## 6.2 简单的二叉树问题
 226 
 
