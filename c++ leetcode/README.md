@@ -695,7 +695,75 @@ priority_queue<pair<int,int>, vector<pair<int,int>>, decltype(&myCmp)> q(myCmp);
 111 最小深度是根节点到叶子节点的深度 叶子节点指没有子节点的节点 因此有以下几个情况 1.根节点是空节点返回0  2.根节点是叶子节点 返回1  3.根节点没有左子树 返回右子树的最小深度+1  4. 根节点没有右子树 返回左子树的最小深度+1  5.根节点有左子树和右子树 返回较小的那一个的深度加1
 
 ## 6.4 定义递归问题
-257
+257 求二叉树所有路径：DFS  1.递归 2.非递归
+```c++
+// 递归
+class Solution {
+private:
+    void catPath(TreeNode* &root, vector<string>& res, string path){
+        if(!root)   return; 
+        if(!root->left && !root->right){
+            path = path + to_string(root->val);
+            res.push_back(path);
+            return;
+        }
+
+        path = path + to_string(root->val) + "->";
+        if(root->left) catPath(root->left, res, path);
+        if(root->right) catPath(root->right, res, path);
+
+        return;
+    }
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        vector <string> res;
+        string path;
+
+        catPath(root, res, path);
+
+        return res;
+    }
+};
+```
+
+```c++
+// 非递归
+// 两个栈  一个保存当前节点 一个保存到当前节点的路径  如果当前节点是叶子节点 就把路径存放到容器中
+class Solution {
+public:
+    vector<string> binaryTreePaths(TreeNode* root) {
+        vector<string> res;
+        if(root == NULL) return res;
+
+        stack<TreeNode*> stack1;  // 存放遍历的结点
+        stack<string> stack2;  // 存放从根节点到当前结点的路径
+        stack1.push(root);
+        stack2.push(to_string(root->val));
+
+        while(!stack1.empty()){
+            // 结点和到该结点的路径同时出栈
+            TreeNode* node = stack1.top();  stack1.pop();
+            string path = stack2.top();  stack2.pop();
+            
+            if(node->left == NULL && node->right == NULL) {
+                res.push_back(path);
+            }
+            else {
+                if(node->left) {
+                    stack1.push(node->left);
+                    stack2.push(path + "->" + to_string(node->left->val));
+                }
+                if(node->right) {
+                    stack1.push(node->right);
+                    stack2.push(path + "->" + to_string(node->right->val));
+                }
+            }
+                
+        }
+        return res;
+    }
+};
+```
 
 113
 
