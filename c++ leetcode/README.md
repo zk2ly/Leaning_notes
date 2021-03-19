@@ -728,7 +728,7 @@ public:
 
 ```c++
 // 非递归
-// 两个栈  一个保存当前节点 一个保存到当前节点的路径  如果当前节点是叶子节点 就把路径存放到容器中
+// 两个栈  一个保存当前节点 一个保存到当前节点的路径  如果当前节点是叶子节点
 class Solution {
 public:
     vector<string> binaryTreePaths(TreeNode* root) {
@@ -766,8 +766,33 @@ public:
 ```
 
 113
+```c++
+//DFS
+class Solution {
+private:
+    vector<vector<int>> res;
+    vector<int> path;
 
-129
+    void dfs(TreeNode* node, int target){
+        if(!node) return;
+        path.push_back(node->val);  // 当前节点加入当前路径中
+        target -= node->val;  // 更新判断条件
+
+        if(!node->left && !node->right && target==0) res.push_back(path);  // 如果符合条件 加入到最终的结果中
+        if(node->left) dfs(node->left, target);  // 遍历左子树
+        if(node->right) dfs(node->right,target);  // 遍历右子树
+        
+        path.pop_back();  // 此时当前节点已经判断完毕 当前节点的左右子树也已经遍历完毕 当前节点从当前路径中退出  回溯到前面的节点 处理另一条路径
+    }
+public:
+    vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
+        dfs(root, targetSum);
+        return res;
+    }
+};
+```
+
+129 类似113 用Int型保存所有到叶子节点的路径和 用另一个int型保存每一条路径遍历过程中节点的和
 
 222
 
